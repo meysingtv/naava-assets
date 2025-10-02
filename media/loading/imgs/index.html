@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading...</title>
+    <link rel="preload" href="mainblursvg.svg" as="image" />
+    <link rel="preload" href="pattern.svg" as="image" />
+    <link rel="preload" href="char2.png" as="image" />
+    <link rel="preload" href="char.png" as="image" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Fallback background color while images load */
+      html, body { background: #0b0f1a; }
+    </style>
+  </head>
+  <body>
+    <div class="bg"></div>
+
+    <img class="char char-left" src="char2.png" alt="Left Character" draggable="false" />
+    <img class="char char-right" src="char.png" alt="Right Character" draggable="false" />
+
+    <!-- No extra UI per request -->
+  </body>
+</html>

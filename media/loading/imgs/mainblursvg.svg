@@ -1,0 +1,33 @@
+<svg width="1921" height="1081" viewBox="0 0 1921 1081" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1_4)">
+<g filter="url(#filter0_f_1_4)">
+<path d="M269.5 1075.5C269.5 1041.81 313.152 1014.5 367 1014.5H1553C1606.85 1014.5 1650.5 1041.81 1650.5 1075.5C1650.5 1109.19 1606.85 1136.5 1553 1136.5H367C313.152 1136.5 269.5 1109.19 269.5 1075.5Z" fill="#9A02FF"/>
+</g>
+<g filter="url(#filter1_f_1_4)">
+<path d="M1803.5 766.5C1835.53 766.5 1861.5 649.422 1861.5 505C1861.5 360.578 1835.53 243.5 1803.5 243.5C1771.47 243.5 1745.5 360.578 1745.5 505C1745.5 649.422 1771.47 766.5 1803.5 766.5Z" fill="#9A02FF"/>
+</g>
+<g filter="url(#filter2_f_1_4)">
+<path d="M248.5 867.5C280.533 867.5 306.5 750.422 306.5 606C306.5 461.578 280.533 344.5 248.5 344.5C216.467 344.5 190.5 461.578 190.5 606C190.5 750.422 216.467 867.5 248.5 867.5Z" fill="#9A02FF"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_1_4" x="-580.5" y="164.5" width="3081" height="1822" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="425" result="effect1_foregroundBlur_1_4"/>
+</filter>
+<filter id="filter1_f_1_4" x="1245.5" y="-256.5" width="1116" height="1523" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="250" result="effect1_foregroundBlur_1_4"/>
+</filter>
+<filter id="filter2_f_1_4" x="-309.5" y="-155.5" width="1116" height="1523" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="250" result="effect1_foregroundBlur_1_4"/>
+</filter>
+<clipPath id="clip0_1_4">
+<rect width="1920" height="1080" fill="white" transform="translate(0.5 0.5)"/>
+</clipPath>
+</defs>
+</svg>
