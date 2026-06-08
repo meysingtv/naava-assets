@@ -3,22 +3,53 @@ import SwiftUI
 struct HilfeView: View {
     @State private var expandedFAQ: UUID? = nil
 
+    @State private var showChat = false
+
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                headerBanner
-                faqSection
-                kontaktSection
-                appInfoSection
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    headerBanner
+                    faqSection
+                    kontaktSection
+                    appInfoSection
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 100)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
-            .padding(.bottom, 32)
+
+            // Floating KI chat button
+            Button(action: { showChat = true }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 16, weight: .semibold))
+                    Text("KI-Assistent")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 14)
+                .background(
+                    LinearGradient(
+                        colors: [Color.appBlue, Color(red: 0.42, green: 0.28, blue: 0.97)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .cornerRadius(28)
+                .shadow(color: Color.appBlue.opacity(0.45), radius: 12, x: 0, y: 6)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 24)
         }
         .background(Color.appBackground)
         .navigationTitle("Hilfe & Support")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
+        .sheet(isPresented: $showChat) {
+            AIChatView()
+        }
     }
 
     // MARK: - Header Banner

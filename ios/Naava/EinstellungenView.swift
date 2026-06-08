@@ -7,6 +7,7 @@ struct EinstellungenView: View {
     @AppStorage("paymentDays")        private var paymentDays: Int = 14
     @AppStorage("invoicePrefix")      private var invoicePrefix: String = "RE"
     @AppStorage("quotePrefix")        private var quotePrefix: String   = "AN"
+    @AppStorage("anthropicAPIKey")    private var apiKey: String        = ""
 
     @State private var showLogoutAlert = false
 
@@ -15,6 +16,7 @@ struct EinstellungenView: View {
             firmaSection
             rechnungenSection
             abonnementSection
+            kiSection
             appSection
             abmeldenSection
         }
@@ -84,6 +86,27 @@ struct EinstellungenView: View {
                             color: appState.selectedPlan.color,
                             label: "Aktueller Plan",
                             value: "\(appState.selectedPlan.rawValue) – \(appState.selectedPlan.monthlyPrice) €/Monat")
+            }
+        }
+    }
+
+    private var kiSection: some View {
+        Section("KI-Assistent") {
+            HStack {
+                settingsRowLabel(icon: "sparkles", color: .appBlue, label: "Anthropic API Key")
+                Spacer()
+                SecureField("sk-ant-…", text: $apiKey)
+                    .multilineTextAlignment(.trailing)
+                    .font(.system(size: 13))
+                    .foregroundColor(.appTextSecondary)
+                    .frame(maxWidth: 160)
+            }
+            if !apiKey.isEmpty {
+                settingsRow(icon: "checkmark.circle.fill", color: .appGreen,
+                            label: "Status", value: "Verbunden")
+            } else {
+                settingsRow(icon: "exclamationmark.triangle.fill", color: .appOrange,
+                            label: "Status", value: "Kein Key")
             }
         }
     }

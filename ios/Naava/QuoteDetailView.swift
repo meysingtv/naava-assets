@@ -9,6 +9,8 @@ struct QuoteDetailView: View {
     @State private var showStatusSheet = false
     @State private var showConvertAlert = false
     @State private var showConvertSuccess = false
+    @State private var showEmailAI = false
+    @EnvironmentObject var toast: ToastManager
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -28,6 +30,13 @@ struct QuoteDetailView: View {
         .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $showShare) {
             if let url = pdfURL { ShareSheet(url: url) }
+        }
+        .sheet(isPresented: $showEmailAI) {
+            AIEmailView(
+                context: "Angebot",
+                details: "\(quote.number), \(quote.title), \(Int(quote.netTotal)) €, Kunde: \(quote.customerName)"
+            )
+            .environmentObject(toast)
         }
         .confirmationDialog("Status ändern", isPresented: $showStatusSheet, titleVisibility: .visible) {
             ForEach(QuoteStatus.allCases, id: \.self) { s in
@@ -218,6 +227,16 @@ struct QuoteDetailView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(Color.appBlue)
+                    .cornerRadius(14)
+            }
+
+            Button(action: { showEmailAI = true }) {
+                Label("Email per KI", systemImage: "sparkles")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.appBlue)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(Color.appBlue.opacity(0.08))
                     .cornerRadius(14)
             }
 

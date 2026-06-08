@@ -13,6 +13,7 @@ struct NewQuoteView: View {
         LineItem(description: "", quantity: 1, unit: "Std.", unitPrice: 75),
     ]
     @State private var showCustomerPicker = false
+    @State private var showAIAssistant    = false
 
     private var isValid: Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -37,10 +38,28 @@ struct NewQuoteView: View {
                         .foregroundColor(.appTextSecondary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Erstellen") { save() }
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(isValid ? .appBlue : .appTextSecondary)
-                        .disabled(!isValid)
+                    HStack(spacing: 14) {
+                        Button(action: { showAIAssistant = true }) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.appBlue)
+                        }
+                        Button("Erstellen") { save() }
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(isValid ? .appBlue : .appTextSecondary)
+                            .disabled(!isValid)
+                    }
+                }
+            }
+            .sheet(isPresented: $showAIAssistant) {
+                AIQuoteAssistantView { aiTitle, aiItems in
+                    title = aiTitle
+                    lineItems = aiItems.map {
+                        LineItem(description: $0.beschreibung,
+                                 quantity:    $0.menge,
+                                 unit:        $0.einheit,
+                                 unitPrice:   $0.einzelpreis)
+                    }
                 }
             }
             .sheet(isPresented: $showCustomerPicker) {

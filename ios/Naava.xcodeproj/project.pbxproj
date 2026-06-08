@@ -47,6 +47,10 @@
 		AA000000000000000000005B /* AuswertungenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000005A /* AuswertungenView.swift */; };
 		AA000000000000000000005D /* EinstellungenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000005C /* EinstellungenView.swift */; };
 		AA000000000000000000005F /* HilfeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000005E /* HilfeView.swift */; };
+		AA0000000000000000000061 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000060 /* AIService.swift */; };
+		AA0000000000000000000063 /* AIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000062 /* AIChatView.swift */; };
+		AA0000000000000000000065 /* AIQuoteAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000064 /* AIQuoteAssistantView.swift */; };
+		AA0000000000000000000067 /* AIEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000066 /* AIEmailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +95,10 @@
 		AA000000000000000000005A /* AuswertungenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuswertungenView.swift; sourceTree = "<group>"; };
 		AA000000000000000000005C /* EinstellungenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EinstellungenView.swift; sourceTree = "<group>"; };
 		AA000000000000000000005E /* HilfeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HilfeView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000060 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		AA0000000000000000000062 /* AIChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIChatView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000064 /* AIQuoteAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIQuoteAssistantView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000066 /* AIEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEmailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +172,10 @@
 			AA000000000000000000005A /* AuswertungenView.swift */,
 			AA000000000000000000005C /* EinstellungenView.swift */,
 			AA000000000000000000005E /* HilfeView.swift */,
+			AA0000000000000000000060 /* AIService.swift */,
+			AA0000000000000000000062 /* AIChatView.swift */,
+			AA0000000000000000000064 /* AIQuoteAssistantView.swift */,
+			AA0000000000000000000066 /* AIEmailView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -276,6 +288,10 @@
 			AA000000000000000000005B /* AuswertungenView.swift in Sources */,
 			AA000000000000000000005D /* EinstellungenView.swift in Sources */,
 			AA000000000000000000005F /* HilfeView.swift in Sources */,
+			AA0000000000000000000061 /* AIService.swift in Sources */,
+			AA0000000000000000000063 /* AIChatView.swift in Sources */,
+			AA0000000000000000000065 /* AIQuoteAssistantView.swift in Sources */,
+			AA0000000000000000000067 /* AIEmailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
