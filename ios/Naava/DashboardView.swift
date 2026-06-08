@@ -9,7 +9,6 @@ struct DashboardView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
                 greeting
-                WeatherWarningCard()
                 TodayCard(appointments: appointments)
                 MapCard(appointments: appointments)
                 statsGrid
