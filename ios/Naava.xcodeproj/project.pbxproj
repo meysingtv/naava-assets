@@ -36,6 +36,7 @@
 		AA0000000000000000000045 /* PlanSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000044 /* PlanSelectionView.swift */; };
 		AA0000000000000000000047 /* CompanyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000046 /* CompanyProfileView.swift */; };
 		AA0000000000000000000049 /* MapFullscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000048 /* MapFullscreenView.swift */; };
+		AA000000000000000000004B /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000004A /* WeatherService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		AA0000000000000000000044 /* PlanSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSelectionView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000046 /* CompanyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyProfileView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000048 /* MapFullscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapFullscreenView.swift; sourceTree = "<group>"; };
+		AA000000000000000000004A /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 			AA0000000000000000000044 /* PlanSelectionView.swift */,
 			AA0000000000000000000046 /* CompanyProfileView.swift */,
 			AA0000000000000000000048 /* MapFullscreenView.swift */,
+			AA000000000000000000004A /* WeatherService.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			AA0000000000000000000045 /* PlanSelectionView.swift in Sources */,
 			AA0000000000000000000047 /* CompanyProfileView.swift in Sources */,
 			AA0000000000000000000049 /* MapFullscreenView.swift in Sources */,
+			AA000000000000000000004B /* WeatherService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

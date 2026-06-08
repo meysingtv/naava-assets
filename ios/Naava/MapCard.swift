@@ -9,6 +9,7 @@ struct MapCard: View {
         span: MKCoordinateSpan(latitudeDelta: 0.10, longitudeDelta: 0.10)
     )
     @State private var showFullMap = false
+    @StateObject private var weather = WeatherService()
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -41,10 +42,10 @@ struct MapCard: View {
 
     private var weatherBadge: some View {
         HStack(spacing: 4) {
-            Image(systemName: "sun.max.fill")
+            Image(systemName: weather.conditionIcon)
                 .font(.system(size: 12))
-                .foregroundColor(.appOrange)
-            Text("22°  Kein Regen")
+                .foregroundColor(weather.iconColor)
+            Text(weather.temperature.map { "\($0)°  \(weather.conditionText)" } ?? weather.conditionText)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(.appTextPrimary)
         }
@@ -52,6 +53,7 @@ struct MapCard: View {
         .background(.ultraThinMaterial)
         .cornerRadius(10)
         .padding(10)
+        .onAppear { weather.fetchIfNeeded() }
     }
 
     private var expandButton: some View {
