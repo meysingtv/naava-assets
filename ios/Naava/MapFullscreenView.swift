@@ -248,27 +248,64 @@ struct MapFullscreenView: View {
                 HStack { Spacer(); ProgressView().tint(.secondary); Spacer() }
                     .padding(.vertical, 24)
             } else {
-                HStack(spacing: 0) {
-                    ForEach(forecast.forecast) { day in
-                        VStack(spacing: 6) {
-                            Text(day.shortDay)
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundColor(.secondary)
-                            Image(systemName: day.icon)
-                                .font(.system(size: 22))
-                                .foregroundColor(day.iconColor)
-                            Text(day.precipMM > 0.5 ? "\(Int(day.precipMM))mm" : "–")
-                                .font(.system(size: 11))
-                                .foregroundColor(day.hasRain ? .orange : .secondary.opacity(0.5))
+                VStack(spacing: 0) {
+                    ForEach(Array(forecast.forecast.enumerated()), id: \.element.id) { idx, day in
+                        VStack(spacing: 0) {
+                            HStack(spacing: 14) {
+                                // Day
+                                Text(day.shortDay)
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                    .frame(width: 30, alignment: .leading)
+
+                                // Icon
+                                Image(systemName: day.icon)
+                                    .font(.system(size: 17))
+                                    .foregroundColor(day.hasRain ? .gray : .appBlue)
+                                    .frame(width: 24)
+
+                                // Condition
+                                Text(day.conditionLabel)
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                                // Rain mm (subtle)
+                                if day.precipMM > 0.5 {
+                                    HStack(spacing: 3) {
+                                        Image(systemName: "drop.fill")
+                                            .font(.system(size: 9))
+                                            .foregroundColor(.gray.opacity(0.6))
+                                        Text("\(Int(day.precipMM))mm")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+
+                                // Temp range
+                                HStack(spacing: 2) {
+                                    Text("\(Int(day.tempMax))°")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.primary)
+                                    Text("/")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.secondary.opacity(0.5))
+                                    Text("\(Int(day.tempMin))°")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.secondary)
+                                }
+                                .frame(width: 64, alignment: .trailing)
+                            }
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 13)
+
+                            if idx < forecast.forecast.count - 1 {
+                                Divider().padding(.horizontal, 24)
+                            }
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(day.hasRain ? Color.orange.opacity(0.06) : Color.clear)
-                        .cornerRadius(12)
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
+                .padding(.vertical, 4)
             }
 
             Spacer()
