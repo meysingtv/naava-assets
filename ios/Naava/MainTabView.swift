@@ -3,6 +3,7 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab = 0
     @State private var showNewSheet = false
+    @State private var showNewQuote = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -19,7 +20,15 @@ struct MainTabView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showNewSheet) {
-            NewActionSheet()
+            NewActionSheet(onNewQuote: {
+                showNewSheet = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    showNewQuote = true
+                }
+            })
+        }
+        .sheet(isPresented: $showNewQuote) {
+            NewQuoteView { _ in }
         }
     }
 }
@@ -110,19 +119,22 @@ private struct TabBarButton: View {
 
 private struct NewActionSheet: View {
     @Environment(\.dismiss) private var dismiss
+    var onNewQuote: () -> Void = {}
 
     private let actions: [(icon: String, title: String, subtitle: String, color: Color)] = [
-        ("briefcase.fill",   "Neuer Auftrag",    "Baustelle anlegen",    .appBlue),
-        ("doc.text.fill",    "Neues Angebot",    "Angebot erstellen",    .appOrange),
-        ("eurosign.circle.fill", "Neue Rechnung","Rechnung ausstellen",  .appGreen),
-        ("person.badge.plus","Neuer Kunde",       "Kundendaten eingeben", .appPurple),
+        ("briefcase.fill",       "Neuer Auftrag",  "Baustelle anlegen",    .appBlue),
+        ("doc.text.fill",        "Neues Angebot",  "Angebot erstellen",    .appOrange),
+        ("eurosign.circle.fill", "Neue Rechnung",  "Rechnung ausstellen",  .appGreen),
+        ("person.badge.plus",    "Neuer Kunde",    "Kundendaten eingeben", .appPurple),
     ]
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 ForEach(actions, id: \.title) { action in
-                    Button(action: { dismiss() }) {
+                    Button(action: {
+                        if action.title == "Neues Angebot" { onNewQuote() } else { dismiss() }
+                    }) {
                         HStack(spacing: 14) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)

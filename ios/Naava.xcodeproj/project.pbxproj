@@ -37,6 +37,9 @@
 		AA0000000000000000000047 /* CompanyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000046 /* CompanyProfileView.swift */; };
 		AA0000000000000000000049 /* MapFullscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000048 /* MapFullscreenView.swift */; };
 		AA000000000000000000004B /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000004A /* WeatherService.swift */; };
+		AA000000000000000000004D /* QuotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000004C /* QuotesView.swift */; };
+		AA000000000000000000004F /* QuoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000004E /* QuoteDetailView.swift */; };
+		AA0000000000000000000051 /* NewQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000050 /* NewQuoteView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +74,9 @@
 		AA0000000000000000000046 /* CompanyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyProfileView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000048 /* MapFullscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapFullscreenView.swift; sourceTree = "<group>"; };
 		AA000000000000000000004A /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		AA000000000000000000004C /* QuotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotesView.swift; sourceTree = "<group>"; };
+		AA000000000000000000004E /* QuoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteDetailView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000050 /* NewQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuoteView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +140,9 @@
 			AA0000000000000000000046 /* CompanyProfileView.swift */,
 			AA0000000000000000000048 /* MapFullscreenView.swift */,
 			AA000000000000000000004A /* WeatherService.swift */,
+			AA000000000000000000004C /* QuotesView.swift */,
+			AA000000000000000000004E /* QuoteDetailView.swift */,
+			AA0000000000000000000050 /* NewQuoteView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -236,6 +245,9 @@
 			AA0000000000000000000047 /* CompanyProfileView.swift in Sources */,
 			AA0000000000000000000049 /* MapFullscreenView.swift in Sources */,
 			AA000000000000000000004B /* WeatherService.swift in Sources */,
+			AA000000000000000000004D /* QuotesView.swift in Sources */,
+			AA000000000000000000004F /* QuoteDetailView.swift in Sources */,
+			AA0000000000000000000051 /* NewQuoteView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

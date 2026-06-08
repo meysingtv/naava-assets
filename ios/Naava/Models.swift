@@ -157,6 +157,54 @@ struct Invoice: Identifiable {
     var formattedTax: String   { Invoice.format(taxAmount) }
 }
 
+// MARK: - Quote Status
+enum QuoteStatus: String, CaseIterable {
+    case draft    = "Entwurf"
+    case sent     = "Gesendet"
+    case accepted = "Angenommen"
+    case rejected = "Abgelehnt"
+
+    var color: Color {
+        switch self {
+        case .draft:    return .appTextSecondary
+        case .sent:     return .appBlue
+        case .accepted: return .appGreen
+        case .rejected: return .red
+        }
+    }
+    var icon: String {
+        switch self {
+        case .draft:    return "pencil.circle.fill"
+        case .sent:     return "paperplane.fill"
+        case .accepted: return "checkmark.seal.fill"
+        case .rejected: return "xmark.circle.fill"
+        }
+    }
+}
+
+// MARK: - Quote
+struct Quote: Identifiable {
+    var id = UUID()
+    var number: String
+    var customerName: String
+    var customerAddress: String
+    var title: String
+    var description: String
+    var lineItems: [LineItem]
+    var status: QuoteStatus
+    var issueDate: Date
+    var validUntil: Date
+    var taxRate: Double = 0.19
+
+    var netTotal: Double   { lineItems.reduce(0) { $0 + $1.total } }
+    var taxAmount: Double  { netTotal * taxRate }
+    var grossTotal: Double { netTotal + taxAmount }
+
+    var formattedGross: String { Invoice.format(grossTotal) }
+    var formattedNet: String   { Invoice.format(netTotal) }
+    var formattedTax: String   { Invoice.format(taxAmount) }
+}
+
 // MARK: - Calendar Event
 struct CalendarEvent: Identifiable {
     let id = UUID()
@@ -299,6 +347,52 @@ enum DummyData {
                 ],
                 status: .overdue,
                 issueDate: ago(45), dueDate: ago(15)),
+    ]
+
+    static var quotes: [Quote] = [
+        Quote(
+            number: "AN-2026-005",
+            customerName: "Familie Müller",
+            customerAddress: "Hauptstr. 12\n41061 Mönchengladbach",
+            title: "Dachsanierung Komplett",
+            description: "Komplette Neueindeckung des Satteldaches mit Tonziegeln inkl. neuer Dachlattung, Unterspannbahn und Traufblech.",
+            lineItems: [
+                LineItem(description: "Abbruch Altbelag",          quantity: 120, unit: "m²",      unitPrice: 8.00),
+                LineItem(description: "Tonziegel inkl. Verlegung",  quantity: 120, unit: "m²",      unitPrice: 38.00),
+                LineItem(description: "Dachlattung Fichte",         quantity: 120, unit: "m²",      unitPrice: 6.50),
+                LineItem(description: "Unterspannbahn",             quantity: 130, unit: "m²",      unitPrice: 3.20),
+            ],
+            status: .sent,
+            issueDate: ago(8), validUntil: from(22)
+        ),
+        Quote(
+            number: "AN-2026-004",
+            customerName: "Thomas Bauer",
+            customerAddress: "Gartenweg 3\n41189 Mönchengladbach",
+            title: "Flachdach Sanierung Garage",
+            description: "Erneuerung der Abdichtung auf dem Garagenflachdach. EPDM-Folie, 2-lagig.",
+            lineItems: [
+                LineItem(description: "Arbeitszeit Dachdecker", quantity: 10, unit: "Std.",     unitPrice: 75.00),
+                LineItem(description: "EPDM-Folie inkl. Klebe", quantity: 1,  unit: "pauschal", unitPrice: 580.00),
+                LineItem(description: "Dämmung 80mm",           quantity: 18, unit: "m²",       unitPrice: 14.50),
+            ],
+            status: .accepted,
+            issueDate: ago(35), validUntil: ago(5)
+        ),
+        Quote(
+            number: "AN-2026-003",
+            customerName: "Maier & Söhne",
+            customerAddress: "Bergweg 22\n41066 Mönchengladbach-Neuwerk",
+            title: "Gaubenanbau + Eindeckung",
+            description: "Anbau einer Schleppgaube mit Holzfenster 80×60 cm. Eindeckung mit Ziegeln passend zum Bestand.",
+            lineItems: [
+                LineItem(description: "Zimmermannarbeiten Gaube", quantity: 1,  unit: "pauschal", unitPrice: 2800.00),
+                LineItem(description: "Eindeckung Gaubenbereich",  quantity: 12, unit: "m²",      unitPrice: 45.00),
+                LineItem(description: "Fenster inkl. Einbau",      quantity: 1,  unit: "Stk.",    unitPrice: 680.00),
+            ],
+            status: .draft,
+            issueDate: ago(2), validUntil: from(28)
+        ),
     ]
 
     static var calendarEvents: [CalendarEvent] = [
