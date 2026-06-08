@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DashboardView: View {
+    @EnvironmentObject var appState: AppState
     private let appointments = DummyData.appointments
     private let stats = DummyData.stats
 
@@ -39,10 +40,10 @@ struct DashboardView: View {
     private var greeting: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Guten Morgen,")
+                Text("\(appState.greeting),")
                     .font(.system(size: 14))
                     .foregroundColor(.appTextSecondary)
-                Text("Max Mustermann 👋")
+                Text("\(appState.displayName) 👋")
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(.appTextPrimary)
             }

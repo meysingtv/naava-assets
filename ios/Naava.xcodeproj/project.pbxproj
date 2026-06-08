@@ -29,6 +29,12 @@
 		AA0000000000000000000037 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000036 /* CalendarView.swift */; };
 		AA0000000000000000000039 /* InvoicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000038 /* InvoicesView.swift */; };
 		AA000000000000000000003B /* InvoiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000003A /* InvoiceDetailView.swift */; };
+		AA000000000000000000003D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000003C /* AppState.swift */; };
+		AA000000000000000000003F /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000003E /* OnboardingView.swift */; };
+		AA0000000000000000000041 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000040 /* AuthView.swift */; };
+		AA0000000000000000000043 /* CompanySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000042 /* CompanySetupView.swift */; };
+		AA0000000000000000000045 /* PlanSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000044 /* PlanSelectionView.swift */; };
+		AA0000000000000000000047 /* CompanyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000046 /* CompanyProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +61,12 @@
 		AA0000000000000000000036 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000038 /* InvoicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesView.swift; sourceTree = "<group>"; };
 		AA000000000000000000003A /* InvoiceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailView.swift; sourceTree = "<group>"; };
+		AA000000000000000000003C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		AA000000000000000000003E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000040 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000042 /* CompanySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanySetupView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000044 /* PlanSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSelectionView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000046 /* CompanyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +122,12 @@
 			AA0000000000000000000036 /* CalendarView.swift */,
 			AA0000000000000000000038 /* InvoicesView.swift */,
 			AA000000000000000000003A /* InvoiceDetailView.swift */,
+			AA000000000000000000003C /* AppState.swift */,
+			AA000000000000000000003E /* OnboardingView.swift */,
+			AA0000000000000000000040 /* AuthView.swift */,
+			AA0000000000000000000042 /* CompanySetupView.swift */,
+			AA0000000000000000000044 /* PlanSelectionView.swift */,
+			AA0000000000000000000046 /* CompanyProfileView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -204,6 +222,12 @@
 			AA0000000000000000000037 /* CalendarView.swift in Sources */,
 			AA0000000000000000000039 /* InvoicesView.swift in Sources */,
 			AA000000000000000000003B /* InvoiceDetailView.swift in Sources */,
+			AA000000000000000000003D /* AppState.swift in Sources */,
+			AA000000000000000000003F /* OnboardingView.swift in Sources */,
+			AA0000000000000000000041 /* AuthView.swift in Sources */,
+			AA0000000000000000000043 /* CompanySetupView.swift in Sources */,
+			AA0000000000000000000045 /* PlanSelectionView.swift in Sources */,
+			AA0000000000000000000047 /* CompanyProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

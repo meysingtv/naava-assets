@@ -312,3 +312,54 @@ enum DummyData {
         CalendarEvent(title: "Neuer Kundenbesuch", customer: "Claudia Weber",    date: d(10, h: 15),durationMinutes: 60,  status: .open),
     ]
 }
+
+// MARK: - Subscription Plan
+enum SubscriptionPlan: String, CaseIterable {
+    case basic    = "Basic"
+    case pro      = "Pro"
+    case business = "Business"
+
+    var monthlyPrice: Int {
+        switch self { case .basic: return 29; case .pro: return 59; case .business: return 99 }
+    }
+    var yearlyMonthlyPrice: Int {
+        switch self { case .basic: return 23; case .pro: return 47; case .business: return 79 }
+    }
+    var color: Color {
+        switch self { case .basic: return .appGreen; case .pro: return .appBlue; case .business: return .appPurple }
+    }
+    var icon: String {
+        switch self { case .basic: return "star.fill"; case .pro: return "bolt.fill"; case .business: return "crown.fill" }
+    }
+    var features: [(label: String, included: Bool)] {
+        switch self {
+        case .basic: return [
+            ("Bis 50 Aufträge/Monat", true),
+            ("1 Nutzer", true),
+            ("Kundenverwaltung", true),
+            ("Rechnungen als PDF", true),
+            ("Fotodokumentation", false),
+            ("E-Rechnung (ZUGFeRD)", false),
+            ("Mehrere Nutzer", false),
+        ]
+        case .pro: return [
+            ("Unbegrenzte Aufträge", true),
+            ("Bis 3 Nutzer", true),
+            ("Kundenverwaltung", true),
+            ("Rechnungen + E-Rechnung", true),
+            ("Fotodokumentation", true),
+            ("Kalender & Termine", true),
+            ("API-Zugang", false),
+        ]
+        case .business: return [
+            ("Unbegrenzte Aufträge", true),
+            ("Bis 10 Nutzer", true),
+            ("Alles aus Pro", true),
+            ("API-Zugang", true),
+            ("Priority Support", true),
+            ("Individuelle Vorlagen", true),
+            ("Datenexport (CSV/JSON)", true),
+        ]
+        }
+    }
+}
