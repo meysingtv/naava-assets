@@ -120,6 +120,9 @@ struct MapFullscreenView: View {
     @State private var selectedItem: MapItem? = nil
     @State private var filter: AppointmentStatus? = nil
     @State private var useHybrid = false
+    @State private var showWeather = false
+    @StateObject private var weather = WeatherService()
+    @StateObject private var forecast = WeatherForecastService()
 
     private var filtered: [MapItem] {
         guard let f = filter else { return MapItem.all }
@@ -143,14 +146,29 @@ struct MapFullscreenView: View {
         .navigationTitle("Karte")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                weatherToolbarButton
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: centerMap) {
-                    Image(systemName: "location.fill")
-                        .foregroundColor(.appBlue)
+                HStack(spacing: 16) {
+                    Button(action: { withAnimation { useHybrid.toggle() } }) {
+                        Image(systemName: useHybrid ? "map.fill" : "globe.europe.africa.fill")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(useHybrid ? .appBlue : .appTextPrimary)
+                    }
+                    Button(action: centerMap) {
+                        Image(systemName: "location.fill")
+                            .foregroundColor(.appBlue)
+                    }
                 }
             }
         }
         .toolbar(.hidden, for: .tabBar)
+        .sheet(isPresented: $showWeather) { weatherSheet }
+        .onAppear {
+            weather.fetchIfNeeded()
+            forecast.fetchIfNeeded()
+        }
     }
 
     // MARK: - Map
@@ -176,27 +194,95 @@ struct MapFullscreenView: View {
 
     // MARK: - Overlays
 
+    // MARK: - Toolbar weather button
+
+    private var weatherToolbarButton: some View {
+        Button(action: { showWeather = true }) {
+            HStack(spacing: 5) {
+                Image(systemName: weather.conditionIcon)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(weather.iconColor)
+                Text(weather.temperature.map { "\($0)°" } ?? "–°")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.appTextPrimary)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(.ultraThinMaterial)
+            .cornerRadius(10)
+        }
+    }
+
+    // MARK: - Weather sheet
+
+    private var weatherSheet: some View {
+        VStack(spacing: 0) {
+            Capsule()
+                .fill(Color.secondary.opacity(0.25))
+                .frame(width: 36, height: 4)
+                .padding(.top, 12)
+                .padding(.bottom, 4)
+
+            // Current conditions
+            VStack(spacing: 6) {
+                Image(systemName: weather.conditionIcon)
+                    .font(.system(size: 52, weight: .thin))
+                    .foregroundColor(weather.iconColor)
+                    .padding(.top, 8)
+                Text(weather.temperature.map { "\($0)°C" } ?? "–°C")
+                    .font(.system(size: 56, weight: .ultraLight))
+                    .foregroundColor(.primary)
+                Text(weather.conditionText)
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundColor(.secondary)
+                Text("Mönchengladbach")
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary.opacity(0.7))
+            }
+            .padding(.bottom, 24)
+
+            Divider().padding(.horizontal, 24)
+
+            // 5-day forecast
+            if forecast.forecast.isEmpty {
+                HStack { Spacer(); ProgressView().tint(.secondary); Spacer() }
+                    .padding(.vertical, 24)
+            } else {
+                HStack(spacing: 0) {
+                    ForEach(forecast.forecast) { day in
+                        VStack(spacing: 6) {
+                            Text(day.shortDay)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.secondary)
+                            Image(systemName: day.icon)
+                                .font(.system(size: 22))
+                                .foregroundColor(day.iconColor)
+                            Text(day.precipMM > 0.5 ? "\(Int(day.precipMM))mm" : "–")
+                                .font(.system(size: 11))
+                                .foregroundColor(day.hasRain ? .orange : .secondary.opacity(0.5))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(day.hasRain ? Color.orange.opacity(0.06) : Color.clear)
+                        .cornerRadius(12)
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+            }
+
+            Spacer()
+        }
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.hidden)
+        .presentationCornerRadius(24)
+    }
+
     private var overlayControls: some View {
         VStack(spacing: 0) {
-            // Filter + map-type bar
+            // Status filter chips only
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    // Map type toggle
-                    Button(action: { withAnimation { useHybrid.toggle() } }) {
-                        HStack(spacing: 5) {
-                            Image(systemName: useHybrid ? "map.fill" : "globe.europe.africa.fill")
-                                .font(.system(size: 11, weight: .bold))
-                            Text(useHybrid ? "Normal" : "Satellit")
-                                .font(.system(size: 12, weight: .semibold))
-                        }
-                        .foregroundColor(useHybrid ? .white : .appBlue)
-                        .padding(.horizontal, 12).padding(.vertical, 6)
-                        .background(useHybrid ? Color.appBlue : Color.appBlue.opacity(0.12))
-                        .cornerRadius(20)
-                    }
-
-                    Divider().frame(height: 20)
-
                     MapFilterChip(label: "Alle (\(MapItem.all.count))", color: .appTextSecondary, active: filter == nil) {
                         withAnimation { filter = nil }
                     }
