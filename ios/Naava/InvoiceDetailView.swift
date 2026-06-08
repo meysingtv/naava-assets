@@ -40,7 +40,7 @@ struct InvoiceDetailView: View {
         .sheet(isPresented: $showMahnung) {
             AIEmailView(
                 context: "Mahnung",
-                details: "\(invoice.number), \(invoice.customerName), \(invoice.formattedGross), fällig seit \(invoice.dueDate.formatted(.dateTime.day().month().year().locale(Locale(identifier: \"de_DE\"))))"
+                details: "\(invoice.number), \(invoice.customerName), \(invoice.formattedGross), fällig seit \(invoice.dueDate.formatted(date: .long, time: .omitted))"
             )
             .environmentObject(toast)
         }
