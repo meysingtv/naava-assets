@@ -7,6 +7,8 @@ struct InvoiceDetailView: View {
     @State private var pdfURL: URL?
     @State private var showShare = false
     @State private var showMarkPaid = false
+    @State private var showMahnung = false
+    @EnvironmentObject var toast: ToastManager
 
     init(invoice: Invoice, onUpdate: @escaping (Invoice) -> Void) {
         _invoice = State(initialValue: invoice)
@@ -34,6 +36,13 @@ struct InvoiceDetailView: View {
             if let url = pdfURL {
                 ShareSheet(url: url)
             }
+        }
+        .sheet(isPresented: $showMahnung) {
+            AIEmailView(
+                context: "Mahnung",
+                details: "\(invoice.number), \(invoice.customerName), \(invoice.formattedGross), fällig seit \(invoice.dueDate.formatted(.dateTime.day().month().year().locale(Locale(identifier: \"de_DE\"))))"
+            )
+            .environmentObject(toast)
         }
         .confirmationDialog("Status ändern", isPresented: $showMarkPaid, titleVisibility: .visible) {
             Button("Als bezahlt markieren") {
@@ -216,6 +225,21 @@ struct InvoiceDetailView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(Color.appBlue.opacity(0.1))
+                    .cornerRadius(14)
+                }
+            }
+            if invoice.status == .overdue {
+                Button(action: { showMahnung = true }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 14, weight: .bold))
+                        Text("Mahnung per KI erstellen")
+                            .font(.system(size: 15, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(Color.red.opacity(0.85))
                     .cornerRadius(14)
                 }
             }

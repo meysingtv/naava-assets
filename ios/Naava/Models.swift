@@ -206,6 +206,40 @@ struct Employee: Identifiable {
     }
 }
 
+// MARK: - Time Entry
+struct TimeEntry: Identifiable {
+    var id = UUID()
+    var employeeName: String
+    var orderTitle: String
+    var startTime: Date
+    var endTime: Date?
+    var breakMinutes: Int = 0
+
+    var isActive: Bool { endTime == nil }
+
+    func netDuration(at now: Date = Date()) -> TimeInterval {
+        let end = endTime ?? now
+        return max(0, end.timeIntervalSince(startTime) - Double(breakMinutes * 60))
+    }
+
+    func formattedNet(at now: Date = Date()) -> String {
+        let s = Int(netDuration(at: now))
+        let h = s / 3600
+        let m = (s % 3600) / 60
+        return h == 0 ? "\(m)min" : String(format: "%dh %02dmin", h, m)
+    }
+}
+
+// MARK: - Calendar Extension
+extension Calendar {
+    func startOfWeek(for date: Date) -> Date {
+        var cal = self
+        cal.firstWeekday = 2
+        let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        return cal.date(from: comps) ?? date
+    }
+}
+
 // MARK: - Quote Status
 enum QuoteStatus: String, CaseIterable {
     case draft    = "Entwurf"
@@ -458,6 +492,29 @@ enum DummyData {
             issueDate: ago(2), validUntil: from(28)
         ),
     ]
+
+    static var timeEntries: [TimeEntry] = {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        func at(h: Int, m: Int = 0, daysAgo: Int = 0) -> Date {
+            let d = cal.date(byAdding: .day, value: -daysAgo, to: today)!
+            return cal.date(bySettingHour: h, minute: m, second: 0, of: d)!
+        }
+        return [
+            TimeEntry(employeeName: "Max Scheulen",  orderTitle: "Dachsanierung",
+                      startTime: at(h: 7, m: 30), endTime: at(h: 16),           breakMinutes: 30),
+            TimeEntry(employeeName: "Hans Weber",    orderTitle: "Dachsanierung",
+                      startTime: at(h: 8),         endTime: at(h: 16, m: 30),   breakMinutes: 30),
+            TimeEntry(employeeName: "Klaus Fischer", orderTitle: "Dachrinne erneuern",
+                      startTime: at(h: 7),         endTime: at(h: 13),           breakMinutes: 0),
+            TimeEntry(employeeName: "Max Scheulen",  orderTitle: "Neueindeckung Anbau",
+                      startTime: at(h: 7, m: 30, daysAgo: 1), endTime: at(h: 17, daysAgo: 1),      breakMinutes: 45),
+            TimeEntry(employeeName: "Hans Weber",    orderTitle: "Gaubenanbau",
+                      startTime: at(h: 8, daysAgo: 1),        endTime: at(h: 15, m: 30, daysAgo: 1), breakMinutes: 30),
+            TimeEntry(employeeName: "Klaus Fischer", orderTitle: "Flachdach Sanierung",
+                      startTime: at(h: 7, daysAgo: 2),        endTime: at(h: 12, m: 30, daysAgo: 2), breakMinutes: 0),
+        ]
+    }()
 
     static var calendarEvents: [CalendarEvent] = [
         CalendarEvent(title: "Dachsanierung",      customer: "Familie Müller",   date: d(8, h: 8),  durationMinutes: 180, status: .inProgress),

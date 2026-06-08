@@ -13,9 +13,16 @@ struct InvoicesView: View {
         invoices.filter { $0.status == .open || $0.status == .overdue }.reduce(0) { $0 + $1.grossTotal }
     }
 
+    private var overdueInvoices: [Invoice] {
+        invoices.filter { $0.status == .overdue }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             summaryBanner
+            if !overdueInvoices.isEmpty {
+                overdueBanner
+            }
             filterBar
             List {
                 ForEach(filtered) { invoice in
@@ -36,6 +43,30 @@ struct InvoicesView: View {
         .navigationTitle("Rechnungen")
         .navigationBarTitleDisplayMode(.large)
         .toolbar(.hidden, for: .tabBar)
+    }
+
+    private var overdueBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(.red)
+            VStack(alignment: .leading, spacing: 1) {
+                Text("\(overdueInvoices.count) überfällige Rechnung\(overdueInvoices.count > 1 ? "en" : "")")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.red)
+                Text("Sofortiger Handlungsbedarf – Mahnung versenden")
+                    .font(.system(size: 11))
+                    .foregroundColor(.red.opacity(0.8))
+            }
+            Spacer()
+            Text(Invoice.format(overdueInvoices.reduce(0) { $0 + $1.grossTotal }))
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(.red)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(Color.red.opacity(0.08))
+        .overlay(Rectangle().frame(height: 1).foregroundColor(Color.red.opacity(0.15)), alignment: .bottom)
     }
 
     private var summaryBanner: some View {
@@ -99,36 +130,44 @@ private struct FilterPill: View {
 private struct InvoiceRow: View {
     let invoice: Invoice
     var body: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(invoice.status.color.opacity(0.12))
-                    .frame(width: 42, height: 42)
-                Image(systemName: invoice.status.icon)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(invoice.status.color)
+        HStack(spacing: 0) {
+            if invoice.status == .overdue {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.red)
+                    .frame(width: 3)
+                    .padding(.trailing, 10)
             }
-            VStack(alignment: .leading, spacing: 3) {
-                HStack {
-                    Text(invoice.number)
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.appTextPrimary)
-                    Spacer()
-                    Text(invoice.formattedGross)
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.appTextPrimary)
-                }
-                Text(invoice.customerName)
-                    .font(.system(size: 13))
-                    .foregroundColor(.appTextSecondary)
-                HStack(spacing: 4) {
-                    Text("Fällig: " + invoice.dueDate.formatted(.dateTime.day().month().locale(Locale(identifier: "de_DE"))))
-                        .font(.system(size: 11))
-                        .foregroundColor(invoice.status == .overdue ? .red : .appTextSecondary)
-                    Spacer()
-                    Text(invoice.status.rawValue)
-                        .font(.system(size: 11, weight: .semibold))
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(invoice.status.color.opacity(0.12))
+                        .frame(width: 42, height: 42)
+                    Image(systemName: invoice.status.icon)
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(invoice.status.color)
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack {
+                        Text(invoice.number)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.appTextPrimary)
+                        Spacer()
+                        Text(invoice.formattedGross)
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(invoice.status == .overdue ? .red : .appTextPrimary)
+                    }
+                    Text(invoice.customerName)
+                        .font(.system(size: 13))
+                        .foregroundColor(.appTextSecondary)
+                    HStack(spacing: 4) {
+                        Text("Fällig: " + invoice.dueDate.formatted(.dateTime.day().month().locale(Locale(identifier: "de_DE"))))
+                            .font(.system(size: 11))
+                            .foregroundColor(invoice.status == .overdue ? .red : .appTextSecondary)
+                        Spacer()
+                        Text(invoice.status.rawValue)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(invoice.status.color)
+                    }
                 }
             }
         }

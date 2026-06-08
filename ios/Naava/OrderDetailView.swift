@@ -9,6 +9,8 @@ struct OrderDetailView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var showStatusPicker = false
     @State private var showDamageAnalysis = false
+    @State private var showSignature = false
+    @State private var signatureImage: UIImage?
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var toast: ToastManager
 
@@ -24,6 +26,7 @@ struct OrderDetailView: View {
                 infoCard
                 if !order.description.isEmpty { descriptionCard }
                 photosSection
+                signatureSection
                 notesCard
             }
             .padding(.horizontal, 16)
@@ -48,6 +51,12 @@ struct OrderDetailView: View {
                 onUpdate(order)
             }
             .environmentObject(toast)
+        }
+        .sheet(isPresented: $showSignature) {
+            SignatureView(customerName: order.customerName, orderNumber: order.number) { image in
+                signatureImage = image
+                toast.show("Unterschrift gespeichert", style: .success, icon: "signature")
+            }
         }
         .confirmationDialog("Status ändern", isPresented: $showStatusPicker, titleVisibility: .visible) {
             ForEach(OrderStatus.allCases, id: \.self) { s in
@@ -221,6 +230,45 @@ struct OrderDetailView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Signature
+    private var signatureSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Label("Kundenunterschrift", systemImage: "signature")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.appTextSecondary)
+                    .textCase(.uppercase)
+                Spacer()
+            }
+            if let sig = signatureImage {
+                Image(uiImage: sig)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 80)
+                    .padding(8)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.appGreen.opacity(0.3), lineWidth: 1))
+            }
+            Button(action: { showSignature = true }) {
+                HStack(spacing: 6) {
+                    Image(systemName: signatureImage == nil ? "hand.point.up.left.fill" : "arrow.counterclockwise")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(signatureImage == nil ? "Unterschrift anfordern" : "Neue Unterschrift")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+                .foregroundColor(.appBlue)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.appBlue.opacity(0.08))
+                .cornerRadius(10)
+            }
+        }
+        .padding(14)
+        .cardStyle()
     }
 
     // MARK: - Notes

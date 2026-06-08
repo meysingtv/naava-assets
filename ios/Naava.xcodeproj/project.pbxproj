@@ -54,6 +54,9 @@
 		AA0000000000000000000069 /* WeatherForecastService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000068 /* WeatherForecastService.swift */; };
 		AA000000000000000000006B /* WeatherWarningCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000006A /* WeatherWarningCard.swift */; };
 		AA000000000000000000006D /* DamageAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000006C /* DamageAnalysisView.swift */; };
+		AA000000000000000000006F /* ZeiterfassungView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000006E /* ZeiterfassungView.swift */; };
+		AA0000000000000000000071 /* SignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000070 /* SignatureView.swift */; };
+		AA0000000000000000000073 /* MaterialCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000072 /* MaterialCalculatorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,6 +108,9 @@
 		AA0000000000000000000068 /* WeatherForecastService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherForecastService.swift; sourceTree = "<group>"; };
 		AA000000000000000000006A /* WeatherWarningCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWarningCard.swift; sourceTree = "<group>"; };
 		AA000000000000000000006C /* DamageAnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DamageAnalysisView.swift; sourceTree = "<group>"; };
+		AA000000000000000000006E /* ZeiterfassungView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeiterfassungView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000070 /* SignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000072 /* MaterialCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialCalculatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +191,9 @@
 			AA0000000000000000000068 /* WeatherForecastService.swift */,
 			AA000000000000000000006A /* WeatherWarningCard.swift */,
 			AA000000000000000000006C /* DamageAnalysisView.swift */,
+			AA000000000000000000006E /* ZeiterfassungView.swift */,
+			AA0000000000000000000070 /* SignatureView.swift */,
+			AA0000000000000000000072 /* MaterialCalculatorView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -304,6 +313,9 @@
 			AA0000000000000000000069 /* WeatherForecastService.swift in Sources */,
 			AA000000000000000000006B /* WeatherWarningCard.swift in Sources */,
 			AA000000000000000000006D /* DamageAnalysisView.swift in Sources */,
+			AA000000000000000000006F /* ZeiterfassungView.swift in Sources */,
+			AA0000000000000000000071 /* SignatureView.swift in Sources */,
+			AA0000000000000000000073 /* MaterialCalculatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

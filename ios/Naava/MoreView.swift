@@ -17,6 +17,11 @@ struct MoreView: View {
                 NavRow(icon: "chart.bar.fill",       label: "Auswertungen",color: .appGreen)  { AuswertungenView() }
             }
 
+            Section("Werkzeuge") {
+                NavRow(icon: "clock.badge.checkmark.fill", label: "Zeiterfassung",  color: .appGreen)  { ZeiterfassungView() }
+                NavRow(icon: "ruler.fill",                 label: "Materialrechner",color: .appPurple) { MaterialCalculatorView() }
+            }
+
             Section("Einstellungen") {
                 NavRow(icon: "gear",                   label: "Einstellungen",  color: .appTextSecondary) { EinstellungenView() }
                 NavRow(icon: "questionmark.circle.fill",label: "Hilfe & Support",color: .appGreen) { HilfeView() }
