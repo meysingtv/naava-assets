@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct NaavaApp: App {
     @StateObject private var appState = AppState()
+    @StateObject private var toastManager = ToastManager()
 
     var body: some Scene {
         WindowGroup {
@@ -14,8 +15,14 @@ struct NaavaApp: App {
                 }
             }
             .environmentObject(appState)
+            .environmentObject(toastManager)
             .preferredColorScheme(.light)
             .animation(.easeInOut(duration: 0.4), value: appState.isOnboarded)
+            .overlay(alignment: .top) {
+                ToastBanner()
+                    .environmentObject(toastManager)
+                    .padding(.top, 8)
+            }
         }
     }
 }

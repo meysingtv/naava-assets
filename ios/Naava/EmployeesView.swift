@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct EmployeesView: View {
+    @EnvironmentObject var toast: ToastManager
     @State private var employees = DummyData.employees
     @State private var search = ""
     @State private var roleFilter: EmployeeRole? = nil
@@ -60,7 +61,10 @@ struct EmployeesView: View {
             }
         }
         .sheet(isPresented: $showNewEmployee) {
-            NewEmployeeView { employees.append($0) }
+            NewEmployeeView { emp in
+                employees.append(emp)
+                toast.show("Mitarbeiter hinzugefügt", style: .success, icon: "person.fill.checkmark")
+            }
         }
         .toolbar(.hidden, for: .tabBar)
     }
@@ -205,4 +209,5 @@ private struct EmpFilterChip: View {
 
 #Preview {
     NavigationStack { EmployeesView() }
+        .environmentObject(ToastManager())
 }

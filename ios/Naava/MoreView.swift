@@ -14,12 +14,12 @@ struct MoreView: View {
                 NavRow(icon: "eurosign.circle.fill", label: "Rechnungen",  color: .appGreen)  { InvoicesView() }
                 NavRow(icon: "doc.text.fill",        label: "Angebote",    color: .appOrange) { QuotesView() }
                 NavRow(icon: "person.2.fill",        label: "Mitarbeiter", color: .appPurple) { EmployeesView() }
-                NavRow(icon: "chart.bar.fill",       label: "Auswertungen",color: .appGreen)  { PlaceholderView(icon: "chart.bar.fill", title: "Auswertungen", subtitle: "Kommt bald") }
+                NavRow(icon: "chart.bar.fill",       label: "Auswertungen",color: .appGreen)  { AuswertungenView() }
             }
 
             Section("Einstellungen") {
-                NavRow(icon: "gear",                   label: "Einstellungen",  color: .appTextSecondary) { PlaceholderView(icon: "gear", title: "Einstellungen", subtitle: "Kommt bald") }
-                NavRow(icon: "questionmark.circle.fill",label: "Hilfe & Support",color: .appGreen) { PlaceholderView(icon: "questionmark.circle.fill", title: "Hilfe", subtitle: "Kommt bald") }
+                NavRow(icon: "gear",                   label: "Einstellungen",  color: .appTextSecondary) { EinstellungenView() }
+                NavRow(icon: "questionmark.circle.fill",label: "Hilfe & Support",color: .appGreen) { HilfeView() }
             }
 
             Section {

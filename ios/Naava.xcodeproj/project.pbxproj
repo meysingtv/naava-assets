@@ -43,6 +43,10 @@
 		AA0000000000000000000053 /* EmployeesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000052 /* EmployeesView.swift */; };
 		AA0000000000000000000055 /* EmployeeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000054 /* EmployeeDetailView.swift */; };
 		AA0000000000000000000057 /* NewEmployeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000056 /* NewEmployeeView.swift */; };
+		AA0000000000000000000059 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000058 /* ToastManager.swift */; };
+		AA000000000000000000005B /* AuswertungenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000005A /* AuswertungenView.swift */; };
+		AA000000000000000000005D /* EinstellungenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000005C /* EinstellungenView.swift */; };
+		AA000000000000000000005F /* HilfeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000005E /* HilfeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +87,10 @@
 		AA0000000000000000000052 /* EmployeesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000054 /* EmployeeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeDetailView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000056 /* NewEmployeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEmployeeView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000058 /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
+		AA000000000000000000005A /* AuswertungenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuswertungenView.swift; sourceTree = "<group>"; };
+		AA000000000000000000005C /* EinstellungenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EinstellungenView.swift; sourceTree = "<group>"; };
+		AA000000000000000000005E /* HilfeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HilfeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +160,10 @@
 			AA0000000000000000000052 /* EmployeesView.swift */,
 			AA0000000000000000000054 /* EmployeeDetailView.swift */,
 			AA0000000000000000000056 /* NewEmployeeView.swift */,
+			AA0000000000000000000058 /* ToastManager.swift */,
+			AA000000000000000000005A /* AuswertungenView.swift */,
+			AA000000000000000000005C /* EinstellungenView.swift */,
+			AA000000000000000000005E /* HilfeView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -260,6 +272,10 @@
 			AA0000000000000000000053 /* EmployeesView.swift in Sources */,
 			AA0000000000000000000055 /* EmployeeDetailView.swift in Sources */,
 			AA0000000000000000000057 /* NewEmployeeView.swift in Sources */,
+			AA0000000000000000000059 /* ToastManager.swift in Sources */,
+			AA000000000000000000005B /* AuswertungenView.swift in Sources */,
+			AA000000000000000000005D /* EinstellungenView.swift in Sources */,
+			AA000000000000000000005F /* HilfeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

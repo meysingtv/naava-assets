@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CustomersView: View {
+    @EnvironmentObject var toast: ToastManager
     @State private var searchText = ""
     @State private var showNewCustomer = false
     @State private var customers = DummyData.customers
@@ -41,6 +42,7 @@ struct CustomersView: View {
         .sheet(isPresented: $showNewCustomer) {
             NewCustomerView { newCustomer in
                 customers.insert(newCustomer, at: 0)
+                toast.show("Kunde gespeichert", style: .success, icon: "person.crop.circle.fill.badge.checkmark")
             }
         }
     }
@@ -92,4 +94,5 @@ private struct CustomerRow: View {
     NavigationStack {
         CustomersView()
     }
+    .environmentObject(ToastManager())
 }

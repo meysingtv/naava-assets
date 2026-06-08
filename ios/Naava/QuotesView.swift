@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct QuotesView: View {
+    @EnvironmentObject var toast: ToastManager
     @State private var quotes = DummyData.quotes
     @State private var filter: QuoteStatus? = nil
     @State private var showNewQuote = false
@@ -52,7 +53,10 @@ struct QuotesView: View {
             }
         }
         .sheet(isPresented: $showNewQuote) {
-            NewQuoteView { quotes.insert($0, at: 0) }
+            NewQuoteView { quote in
+                quotes.insert(quote, at: 0)
+                toast.show("Angebot erstellt", style: .success, icon: "doc.text.fill")
+            }
         }
         .toolbar(.hidden, for: .tabBar)
     }
@@ -194,4 +198,5 @@ private struct QuoteFilterChip: View {
 
 #Preview {
     NavigationStack { QuotesView() }
+        .environmentObject(ToastManager())
 }

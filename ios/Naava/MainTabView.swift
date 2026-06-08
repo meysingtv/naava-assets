@@ -182,4 +182,6 @@ private struct NewActionSheet: View {
 
 #Preview {
     MainTabView()
+        .environmentObject(AppState())
+        .environmentObject(ToastManager())
 }

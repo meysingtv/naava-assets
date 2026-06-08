@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AppointmentsView: View {
+    @EnvironmentObject var toast: ToastManager
     @State private var orders = DummyData.orders
     @State private var selectedStatus: OrderStatus? = nil
     @State private var showNew = false
@@ -43,7 +44,10 @@ struct AppointmentsView: View {
         }
         .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $showNew) {
-            NewOrderView { newOrder in orders.insert(newOrder, at: 0) }
+            NewOrderView { newOrder in
+                orders.insert(newOrder, at: 0)
+                toast.show("Auftrag erstellt", style: .success, icon: "briefcase.fill")
+            }
         }
     }
 
@@ -128,4 +132,5 @@ private struct OrderRow: View {
 
 #Preview {
     NavigationStack { AppointmentsView() }
+        .environmentObject(ToastManager())
 }
