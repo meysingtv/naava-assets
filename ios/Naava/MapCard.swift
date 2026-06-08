@@ -5,7 +5,7 @@ struct MapCard: View {
     let appointments: [Appointment]
 
     @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 48.1440, longitude: 11.5250),
+        center: CLLocationCoordinate2D(latitude: 51.1963, longitude: 6.4428),
         span: MKCoordinateSpan(latitudeDelta: 0.10, longitudeDelta: 0.10)
     )
     @State private var showFullMap = false

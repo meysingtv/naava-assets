@@ -12,12 +12,99 @@ struct MapItem: Identifiable {
     let coordinate: CLLocationCoordinate2D
 
     static let all: [MapItem] = [
-        MapItem(title: "Dachsanierung",      customer: "Familie Müller",   address: "Hauptstr. 12, München",       status: .inProgress, coordinate: CLLocationCoordinate2D(latitude: 48.1351, longitude: 11.5820)),
-        MapItem(title: "Dachrinne erneuern", customer: "Fa. Schmidt GmbH", address: "Industriestr. 45, München",   status: .planned,    coordinate: CLLocationCoordinate2D(latitude: 48.1451, longitude: 11.5650)),
-        MapItem(title: "Angebot vor Ort",    customer: "Bauer, Thomas",    address: "Gartenweg 3, München-Pasing", status: .open,       coordinate: CLLocationCoordinate2D(latitude: 48.1520, longitude: 11.4620)),
-        MapItem(title: "Neueindeckung Anbau",customer: "Claudia Weber",    address: "Rosenstr. 7, München-Pasing", status: .open,       coordinate: CLLocationCoordinate2D(latitude: 48.1490, longitude: 11.4550)),
-        MapItem(title: "Gaubenanbau",        customer: "Maier & Söhne",    address: "Bergweg 22, München-Schwabing",status: .planned,   coordinate: CLLocationCoordinate2D(latitude: 48.1680, longitude: 11.5750)),
+        MapItem(title: "Dachsanierung",      customer: "Familie Müller",   address: "Hauptstr. 12, Mönchengladbach",         status: .inProgress, coordinate: CLLocationCoordinate2D(latitude: 51.1963, longitude: 6.4428)),
+        MapItem(title: "Dachrinne erneuern", customer: "Fa. Schmidt GmbH", address: "Industriestr. 45, MG-Rheydt",           status: .planned,    coordinate: CLLocationCoordinate2D(latitude: 51.1695, longitude: 6.4424)),
+        MapItem(title: "Angebot vor Ort",    customer: "Bauer, Thomas",    address: "Gartenweg 3, MG-Wickrath",              status: .open,       coordinate: CLLocationCoordinate2D(latitude: 51.1428, longitude: 6.4082)),
+        MapItem(title: "Neueindeckung Anbau",customer: "Claudia Weber",    address: "Rosenstr. 7, Mönchengladbach",          status: .open,       coordinate: CLLocationCoordinate2D(latitude: 51.1578, longitude: 6.4011)),
+        MapItem(title: "Gaubenanbau",        customer: "Maier & Söhne",    address: "Bergweg 22, MG-Neuwerk",                status: .planned,    coordinate: CLLocationCoordinate2D(latitude: 51.2189, longitude: 6.4189)),
     ]
+}
+
+// MARK: - MKMapView Wrapper (for mapType support)
+
+private struct NaavaMapView: UIViewRepresentable {
+    @Binding var region: MKCoordinateRegion
+    var mapType: MKMapType
+    var items: [MapItem]
+    var selectedItem: MapItem?
+    var onSelect: (MapItem?) -> Void
+
+    func makeUIView(context: Context) -> MKMapView {
+        let mv = MKMapView()
+        mv.delegate = context.coordinator
+        mv.showsUserLocation = true
+        mv.setRegion(region, animated: false)
+        mv.mapType = mapType
+        return mv
+    }
+
+    func updateUIView(_ mv: MKMapView, context: Context) {
+        mv.mapType = mapType
+
+        // Sync region only when centre drifts meaningfully
+        let cur = mv.region
+        let dLat = abs(cur.center.latitude  - region.center.latitude)
+        let dLon = abs(cur.center.longitude - region.center.longitude)
+        if dLat > 0.001 || dLon > 0.001 {
+            mv.setRegion(region, animated: true)
+        }
+
+        // Rebuild annotations when items change
+        let existing = mv.annotations.compactMap { $0 as? MapPin }
+        let existingIds = Set(existing.map { $0.item.id })
+        let newIds = Set(items.map { $0.id })
+
+        if existingIds != newIds {
+            mv.removeAnnotations(mv.annotations)
+            mv.addAnnotations(items.map { MapPin(item: $0) })
+        }
+
+        // Selection state
+        for ann in mv.annotations {
+            if let pin = ann as? MapPin,
+               let view = mv.view(for: pin) as? MKMarkerAnnotationView {
+                let sel = selectedItem?.id == pin.item.id
+                view.markerTintColor = UIColor(pin.item.status.color)
+                view.transform = sel ? CGAffineTransform(scaleX: 1.25, y: 1.25) : .identity
+            }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    class Coordinator: NSObject, MKMapViewDelegate {
+        var parent: NaavaMapView
+        init(_ p: NaavaMapView) { parent = p }
+
+        func mapView(_ mv: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard let pin = annotation as? MapPin else { return nil }
+            let id = "naava-pin"
+            let view = mv.dequeueReusableAnnotationView(withIdentifier: id) as? MKMarkerAnnotationView
+                ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: id)
+            view.annotation = annotation
+            view.markerTintColor = UIColor(pin.item.status.color)
+            view.glyphImage = UIImage(systemName: pin.item.status.icon)
+            view.canShowCallout = false
+            return view
+        }
+
+        func mapView(_ mv: MKMapView, didSelect view: MKAnnotationView) {
+            guard let pin = view.annotation as? MapPin else { return }
+            mv.deselectAnnotation(view.annotation, animated: false)
+            parent.onSelect(pin.item)
+        }
+
+        func mapView(_ mv: MKMapView, regionDidChangeAnimated animated: Bool) {
+            parent.region = mv.region
+        }
+    }
+}
+
+private class MapPin: NSObject, MKAnnotation {
+    let item: MapItem
+    var coordinate: CLLocationCoordinate2D { item.coordinate }
+    var title: String? { item.title }
+    init(item: MapItem) { self.item = item }
 }
 
 // MARK: - Full Screen Map
@@ -27,11 +114,12 @@ struct MapFullscreenView: View {
     @Environment(\.openURL) private var openURL
 
     @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 48.1440, longitude: 11.5250),
+        center: CLLocationCoordinate2D(latitude: 51.1963, longitude: 6.4428),
         span: MKCoordinateSpan(latitudeDelta: 0.13, longitudeDelta: 0.13)
     )
     @State private var selectedItem: MapItem? = nil
     @State private var filter: AppointmentStatus? = nil
+    @State private var useHybrid = false
 
     private var filtered: [MapItem] {
         guard let f = filter else { return MapItem.all }
@@ -68,27 +156,47 @@ struct MapFullscreenView: View {
     // MARK: - Map
 
     private var mapLayer: some View {
-        Map(coordinateRegion: $region, annotationItems: filtered) { item in
-            MapAnnotation(coordinate: item.coordinate) {
-                PinButton(item: item, isSelected: selectedItem?.id == item.id) {
-                    withAnimation(.spring(response: 0.35)) {
-                        selectedItem = selectedItem?.id == item.id ? nil : item
-                        centerOn(item)
-                    }
+        NaavaMapView(
+            region: $region,
+            mapType: useHybrid ? .hybrid : .standard,
+            items: filtered,
+            selectedItem: selectedItem
+        ) { tapped in
+            withAnimation(.spring(response: 0.35)) {
+                if selectedItem?.id == tapped?.id {
+                    selectedItem = nil
+                } else {
+                    selectedItem = tapped
+                    if let t = tapped { centerOn(t) }
                 }
             }
         }
         .ignoresSafeArea()
-        .onTapGesture { withAnimation { selectedItem = nil } }
     }
 
     // MARK: - Overlays
 
     private var overlayControls: some View {
         VStack(spacing: 0) {
-            // Filter bar
+            // Filter + map-type bar
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
+                    // Map type toggle
+                    Button(action: { withAnimation { useHybrid.toggle() } }) {
+                        HStack(spacing: 5) {
+                            Image(systemName: useHybrid ? "map.fill" : "globe.europe.africa.fill")
+                                .font(.system(size: 11, weight: .bold))
+                            Text(useHybrid ? "Normal" : "Satellit")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .foregroundColor(useHybrid ? .white : .appBlue)
+                        .padding(.horizontal, 12).padding(.vertical, 6)
+                        .background(useHybrid ? Color.appBlue : Color.appBlue.opacity(0.12))
+                        .cornerRadius(20)
+                    }
+
+                    Divider().frame(height: 20)
+
                     MapFilterChip(label: "Alle (\(MapItem.all.count))", color: .appTextSecondary, active: filter == nil) {
                         withAnimation { filter = nil }
                     }
@@ -157,42 +265,10 @@ struct MapFullscreenView: View {
     private func centerMap() {
         withAnimation(.easeInOut(duration: 0.5)) {
             region = MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 48.1440, longitude: 11.5250),
+                center: CLLocationCoordinate2D(latitude: 51.1963, longitude: 6.4428),
                 span: MKCoordinateSpan(latitudeDelta: 0.13, longitudeDelta: 0.13)
             )
         }
-    }
-}
-
-// MARK: - Pin Button
-
-private struct PinButton: View {
-    let item: MapItem
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                ZStack {
-                    Circle()
-                        .fill(item.status.color)
-                        .frame(width: isSelected ? 40 : 30, height: isSelected ? 40 : 30)
-                        .shadow(color: item.status.color.opacity(0.5), radius: isSelected ? 8 : 4, x: 0, y: 2)
-                    Image(systemName: item.status.icon)
-                        .font(.system(size: isSelected ? 16 : 12, weight: .bold))
-                        .foregroundColor(.white)
-                }
-                .overlay(
-                    isSelected ? Circle().stroke(Color.white, lineWidth: 3) : nil
-                )
-
-                Triangle()
-                    .fill(item.status.color)
-                    .frame(width: isSelected ? 10 : 8, height: isSelected ? 6 : 5)
-            }
-        }
-        .animation(.spring(response: 0.3), value: isSelected)
     }
 }
 
@@ -311,18 +387,6 @@ private struct PinDetailCard: View {
         .background(Color(uiColor: .systemBackground))
         .cornerRadius(24, corners: [.topLeft, .topRight])
         .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: -4)
-    }
-}
-
-// Triangle shape (shared with MapCard)
-private struct Triangle: Shape {
-    func path(in rect: CGRect) -> Path {
-        var p = Path()
-        p.move(to: CGPoint(x: rect.midX, y: rect.maxY))
-        p.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
-        p.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-        p.closeSubpath()
-        return p
     }
 }
 

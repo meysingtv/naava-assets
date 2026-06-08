@@ -184,59 +184,59 @@ enum DummyData {
         Appointment(
             title: "Dachsanierung",
             customer: "Familie Müller",
-            address: "Hauptstr. 12, München",
+            address: "Hauptstr. 12, Mönchengladbach",
             time: "08:00",
             status: .inProgress,
-            coordinate: CLLocationCoordinate2D(latitude: 48.1351, longitude: 11.5820)
+            coordinate: CLLocationCoordinate2D(latitude: 51.1963, longitude: 6.4428)
         ),
         Appointment(
             title: "Dachrinne erneuern",
             customer: "Fa. Schmidt GmbH",
-            address: "Industriestr. 45, München",
+            address: "Industriestr. 45, Mönchengladbach-Rheydt",
             time: "11:00",
             status: .planned,
-            coordinate: CLLocationCoordinate2D(latitude: 48.1451, longitude: 11.5650)
+            coordinate: CLLocationCoordinate2D(latitude: 51.1695, longitude: 6.4424)
         ),
         Appointment(
             title: "Angebot vor Ort",
             customer: "Bauer, Thomas",
-            address: "Gartenweg 3, Pasing",
+            address: "Gartenweg 3, Mönchengladbach-Wickrath",
             time: "14:30",
             status: .open,
-            coordinate: CLLocationCoordinate2D(latitude: 48.1520, longitude: 11.4620)
+            coordinate: CLLocationCoordinate2D(latitude: 51.1428, longitude: 6.4082)
         ),
     ]
 
     static var customers: [Customer] = [
         Customer(firstName: "Thomas",  lastName: "Bauer",
                  company: nil,
-                 phone: "+49 89 123456",  email: "t.bauer@gmail.com",
-                 street: "Gartenweg 3",   city: "München-Pasing",
+                 phone: "+49 2161 123456",  email: "t.bauer@gmail.com",
+                 street: "Gartenweg 3",   city: "Mönchengladbach",
                  avatarColor: .appBlue),
         Customer(firstName: "Klaus",   lastName: "Müller",
                  company: "Familie Müller",
-                 phone: "+49 89 654321",  email: "mueller@web.de",
-                 street: "Hauptstr. 12",  city: "München",
+                 phone: "+49 2161 654321",  email: "mueller@web.de",
+                 street: "Hauptstr. 12",  city: "Mönchengladbach",
                  avatarColor: .appGreen),
         Customer(firstName: "Andrea",  lastName: "Schmidt",
                  company: "Schmidt GmbH",
-                 phone: "+49 89 112233",  email: "info@schmidt-gmbh.de",
-                 street: "Industriestr. 45", city: "München",
+                 phone: "+49 2166 112233",  email: "info@schmidt-gmbh.de",
+                 street: "Industriestr. 45", city: "Mönchengladbach-Rheydt",
                  avatarColor: .appOrange),
         Customer(firstName: "Claudia", lastName: "Weber",
                  company: nil,
-                 phone: "+49 89 778899",  email: "c.weber@icloud.com",
-                 street: "Rosenstr. 7",   city: "München-Pasing",
+                 phone: "+49 2161 778899",  email: "c.weber@icloud.com",
+                 street: "Rosenstr. 7",   city: "Mönchengladbach",
                  avatarColor: .appPurple),
         Customer(firstName: "Peter",   lastName: "Maier",
                  company: "Maier & Söhne",
-                 phone: "+49 89 334455",  email: "p.maier@maier-soehne.de",
-                 street: "Bergweg 22",    city: "München-Schwabing",
+                 phone: "+49 2161 334455",  email: "p.maier@maier-soehne.de",
+                 street: "Bergweg 22",    city: "Mönchengladbach-Neuwerk",
                  avatarColor: .appBlue),
         Customer(firstName: "Julia",   lastName: "Hofmann",
                  company: nil,
-                 phone: "+49 89 556677",  email: "julia.hofmann@gmx.de",
-                 street: "Wiesenweg 5",   city: "Dachau",
+                 phone: "+49 2161 556677",  email: "julia.hofmann@gmx.de",
+                 street: "Wiesenweg 5",   city: "Mönchengladbach-Odenkirchen",
                  avatarColor: .appGreen),
     ]
 
@@ -249,30 +249,30 @@ enum DummyData {
 
     static var orders: [Order] = [
         Order(number: "AU-2026-012", title: "Dachsanierung",
-              customerName: "Familie Müller", address: "Hauptstr. 12, München",
+              customerName: "Familie Müller", address: "Hauptstr. 12, Mönchengladbach",
               description: "Komplette Neueindeckung mit Biberschwanzziegeln inkl. Dachlattung und Unterspannbahn.",
               status: .inProgress, date: ago(5), estimatedHours: 24),
         Order(number: "AU-2026-011", title: "Dachrinne erneuern",
-              customerName: "Fa. Schmidt GmbH", address: "Industriestr. 45, München",
+              customerName: "Fa. Schmidt GmbH", address: "Industriestr. 45, Mönchengladbach-Rheydt",
               description: "Austausch der kompletten Dachrinne und Fallrohre. Material: Aluminium anthrazit.",
               status: .done, date: ago(15), estimatedHours: 6),
         Order(number: "AU-2026-010", title: "Neueindeckung Anbau",
-              customerName: "Claudia Weber", address: "Rosenstr. 7, München-Pasing",
+              customerName: "Claudia Weber", address: "Rosenstr. 7, Mönchengladbach",
               description: "Neueindeckung des Dachgeschoss-Anbaus. Flachdach mit Bitumenbahnen 2-lagig.",
               status: .open, date: from(7), estimatedHours: 8),
         Order(number: "AU-2026-009", title: "Gaubenanbau",
-              customerName: "Maier & Söhne", address: "Bergweg 22, München-Schwabing",
+              customerName: "Maier & Söhne", address: "Bergweg 22, Mönchengladbach-Neuwerk",
               description: "Anbau einer Schleppgaube mit Fenster. Eindeckung mit Ziegeln passend zum Bestand.",
               status: .open, date: from(3), estimatedHours: 32),
         Order(number: "AU-2026-008", title: "Flachdach Sanierung",
-              customerName: "Thomas Bauer", address: "Gartenweg 3, München-Pasing",
+              customerName: "Thomas Bauer", address: "Gartenweg 3, Mönchengladbach",
               description: "Erneuerung der Abdichtung auf dem Garagenflachdach. EPDM-Folie.",
               status: .invoiced, date: ago(30), estimatedHours: 10),
     ]
 
     static var invoices: [Invoice] = [
         Invoice(number: "RE-2026-008", customerName: "Thomas Bauer",
-                customerAddress: "Gartenweg 3\n82152 München-Pasing",
+                customerAddress: "Gartenweg 3\n41189 Mönchengladbach",
                 orderTitle: "Flachdach Sanierung",
                 lineItems: [
                     LineItem(description: "Arbeitszeit Dachdecker (2 Mann × 5h)", quantity: 10, unit: "Std.", unitPrice: 75),
@@ -282,7 +282,7 @@ enum DummyData {
                 status: .paid,
                 issueDate: ago(25), dueDate: ago(11)),
         Invoice(number: "RE-2026-009", customerName: "Fa. Schmidt GmbH",
-                customerAddress: "Industriestr. 45\n80339 München",
+                customerAddress: "Industriestr. 45\n41236 Mönchengladbach-Rheydt",
                 orderTitle: "Dachrinne erneuern",
                 lineItems: [
                     LineItem(description: "Arbeitszeit Dachdecker", quantity: 6, unit: "Std.", unitPrice: 75),
@@ -292,7 +292,7 @@ enum DummyData {
                 status: .open,
                 issueDate: ago(10), dueDate: from(4)),
         Invoice(number: "RE-2026-007", customerName: "Klaus Müller",
-                customerAddress: "Hauptstr. 12\n80331 München",
+                customerAddress: "Hauptstr. 12\n41061 Mönchengladbach",
                 orderTitle: "Dachsanierung (Anzahlung 50%)",
                 lineItems: [
                     LineItem(description: "Anzahlung 50% – Dachsanierung Biberschwanz", quantity: 1, unit: "pauschal", unitPrice: 2000),
