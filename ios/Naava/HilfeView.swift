@@ -154,11 +154,11 @@ struct HilfeView: View {
 
     private let faqItems: [FAQItem] = [
         FAQItem(question: "Wie erstelle ich einen neuen Auftrag?",
-                answer: "Tippe unten auf den blauen Plus-Button und wähle „Neuer Auftrag". Oder gehe zu Aufträge und tippe oben rechts auf +."),
+                answer: "Tippe unten auf den blauen Plus-Button und wähle \"Neuer Auftrag\". Oder gehe zu Aufträge und tippe oben rechts auf +."),
         FAQItem(question: "Wie exportiere ich eine Rechnung als PDF?",
-                answer: "Öffne die Rechnung und tippe auf „Als PDF exportieren". Du kannst das PDF dann per E-Mail, AirDrop oder anderen Apps teilen."),
+                answer: "Öffne die Rechnung und tippe auf \"Als PDF exportieren\". Du kannst das PDF dann per E-Mail, AirDrop oder anderen Apps teilen."),
         FAQItem(question: "Wie wandle ich ein Angebot in einen Auftrag um?",
-                answer: "Öffne das Angebot (Status: Angenommen oder Gesendet) und tippe auf den grünen Button „Zu Auftrag konvertieren"."),
+                answer: "Öffne das Angebot (Status: Angenommen oder Gesendet) und tippe auf den grünen Button \"Zu Auftrag konvertieren\"."),
         FAQItem(question: "Kann ich mehrere Mitarbeiter hinzufügen?",
                 answer: "Ja! Gehe zu Mehr → Mitarbeiter und tippe auf + oben rechts. Pro- und Business-Pläne unterstützen mehrere Nutzer."),
         FAQItem(question: "Wie ändere ich meinen Firmennamen?",
