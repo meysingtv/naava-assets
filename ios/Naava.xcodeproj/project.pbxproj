@@ -40,6 +40,9 @@
 		AA000000000000000000004D /* QuotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000004C /* QuotesView.swift */; };
 		AA000000000000000000004F /* QuoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000004E /* QuoteDetailView.swift */; };
 		AA0000000000000000000051 /* NewQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000050 /* NewQuoteView.swift */; };
+		AA0000000000000000000053 /* EmployeesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000052 /* EmployeesView.swift */; };
+		AA0000000000000000000055 /* EmployeeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000054 /* EmployeeDetailView.swift */; };
+		AA0000000000000000000057 /* NewEmployeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000056 /* NewEmployeeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +80,9 @@
 		AA000000000000000000004C /* QuotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotesView.swift; sourceTree = "<group>"; };
 		AA000000000000000000004E /* QuoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteDetailView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000050 /* NewQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuoteView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000052 /* EmployeesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000054 /* EmployeeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeDetailView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000056 /* NewEmployeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEmployeeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +149,9 @@
 			AA000000000000000000004C /* QuotesView.swift */,
 			AA000000000000000000004E /* QuoteDetailView.swift */,
 			AA0000000000000000000050 /* NewQuoteView.swift */,
+			AA0000000000000000000052 /* EmployeesView.swift */,
+			AA0000000000000000000054 /* EmployeeDetailView.swift */,
+			AA0000000000000000000056 /* NewEmployeeView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -248,6 +257,9 @@
 			AA000000000000000000004D /* QuotesView.swift in Sources */,
 			AA000000000000000000004F /* QuoteDetailView.swift in Sources */,
 			AA0000000000000000000051 /* NewQuoteView.swift in Sources */,
+			AA0000000000000000000053 /* EmployeesView.swift in Sources */,
+			AA0000000000000000000055 /* EmployeeDetailView.swift in Sources */,
+			AA0000000000000000000057 /* NewEmployeeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

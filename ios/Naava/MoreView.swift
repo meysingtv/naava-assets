@@ -13,7 +13,7 @@ struct MoreView: View {
                 NavRow(icon: "calendar",             label: "Kalender",    color: .appBlue)   { CalendarView() }
                 NavRow(icon: "eurosign.circle.fill", label: "Rechnungen",  color: .appGreen)  { InvoicesView() }
                 NavRow(icon: "doc.text.fill",        label: "Angebote",    color: .appOrange) { QuotesView() }
-                NavRow(icon: "person.2.fill",        label: "Mitarbeiter", color: .appPurple) { PlaceholderView(icon: "person.2.fill", title: "Mitarbeiter", subtitle: "Kommt bald") }
+                NavRow(icon: "person.2.fill",        label: "Mitarbeiter", color: .appPurple) { EmployeesView() }
                 NavRow(icon: "chart.bar.fill",       label: "Auswertungen",color: .appGreen)  { PlaceholderView(icon: "chart.bar.fill", title: "Auswertungen", subtitle: "Kommt bald") }
             }
 

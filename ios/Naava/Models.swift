@@ -157,6 +157,55 @@ struct Invoice: Identifiable {
     var formattedTax: String   { Invoice.format(taxAmount) }
 }
 
+// MARK: - Employee Role
+enum EmployeeRole: String, CaseIterable {
+    case meister = "Meister"
+    case geselle = "Geselle"
+    case azubi   = "Azubi"
+    case buero   = "Büro"
+
+    var color: Color {
+        switch self {
+        case .meister: return .appBlue
+        case .geselle: return .appGreen
+        case .azubi:   return .appOrange
+        case .buero:   return .appPurple
+        }
+    }
+    var icon: String {
+        switch self {
+        case .meister: return "star.fill"
+        case .geselle: return "hammer.fill"
+        case .azubi:   return "graduationcap.fill"
+        case .buero:   return "doc.text.fill"
+        }
+    }
+}
+
+// MARK: - Employee
+struct Employee: Identifiable {
+    var id = UUID()
+    var firstName: String
+    var lastName: String
+    var role: EmployeeRole
+    var phone: String
+    var email: String
+    var avatarColor: Color
+    var hireDate: Date
+    var isActive: Bool = true
+    var hoursThisMonth: Int
+
+    var fullName: String { "\(firstName) \(lastName)" }
+    var initials: String { "\(firstName.prefix(1))\(lastName.prefix(1))" }
+
+    var experienceText: String {
+        let months = Calendar.current.dateComponents([.month], from: hireDate, to: Date()).month ?? 0
+        if months < 12 { return "\(months) Monate" }
+        let years = months / 12
+        return years == 1 ? "1 Jahr" : "\(years) Jahre"
+    }
+}
+
 // MARK: - Quote Status
 enum QuoteStatus: String, CaseIterable {
     case draft    = "Entwurf"
@@ -347,6 +396,21 @@ enum DummyData {
                 ],
                 status: .overdue,
                 issueDate: ago(45), dueDate: ago(15)),
+    ]
+
+    static var employees: [Employee] = [
+        Employee(firstName: "Max",   lastName: "Scheulen",
+                 role: .meister, phone: "+49 2161 987654", email: "max.scheulen@betrieb.de",
+                 avatarColor: .appBlue,   hireDate: ago(1825), isActive: true, hoursThisMonth: 142),
+        Employee(firstName: "Hans",  lastName: "Weber",
+                 role: .geselle, phone: "+49 2161 112233", email: "h.weber@betrieb.de",
+                 avatarColor: .appGreen,  hireDate: ago(730),  isActive: true, hoursThisMonth: 136),
+        Employee(firstName: "Klaus", lastName: "Fischer",
+                 role: .geselle, phone: "+49 2161 445566", email: "k.fischer@betrieb.de",
+                 avatarColor: .appOrange, hireDate: ago(365),  isActive: true, hoursThisMonth: 118),
+        Employee(firstName: "Anna",  lastName: "Becker",
+                 role: .buero,   phone: "+49 2161 778899", email: "a.becker@betrieb.de",
+                 avatarColor: .appPurple, hireDate: ago(548),  isActive: true, hoursThisMonth: 80),
     ]
 
     static var quotes: [Quote] = [
