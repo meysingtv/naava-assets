@@ -79,7 +79,7 @@ struct EinstellungenView: View {
 
     private var abonnementSection: some View {
         Section("Abonnement") {
-            NavigationLink(destination: PlanSelectionView().toolbar(.hidden, for: .tabBar)) {
+            NavigationLink(destination: PlanSelectionView(onDone: {}).toolbar(.hidden, for: .tabBar)) {
                 settingsRow(icon: appState.selectedPlan.icon,
                             color: appState.selectedPlan.color,
                             label: "Aktueller Plan",
