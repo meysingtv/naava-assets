@@ -8,7 +8,9 @@ struct OrderDetailView: View {
     @State private var photos: [UIImage] = []
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var showStatusPicker = false
+    @State private var showDamageAnalysis = false
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var toast: ToastManager
 
     init(order: Order, onUpdate: @escaping (Order) -> Void) {
         _order = State(initialValue: order)
@@ -40,6 +42,13 @@ struct OrderDetailView: View {
             }
         }
         .toolbar(.hidden, for: .tabBar)
+        .sheet(isPresented: $showDamageAnalysis) {
+            DamageAnalysisView { analysisNote in
+                order.notes = order.notes.isEmpty ? analysisNote : order.notes + "\n\n" + analysisNote
+                onUpdate(order)
+            }
+            .environmentObject(toast)
+        }
         .confirmationDialog("Status ändern", isPresented: $showStatusPicker, titleVisibility: .visible) {
             ForEach(OrderStatus.allCases, id: \.self) { s in
                 Button(s.rawValue) { order.status = s; onUpdate(order) }
@@ -152,6 +161,19 @@ struct OrderDetailView: View {
                     .foregroundColor(.appTextSecondary)
                     .kerning(0.6)
                 Spacer()
+                Button(action: { showDamageAnalysis = true }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 12, weight: .bold))
+                        Text("Schaden analysieren")
+                            .font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundColor(.appOrange)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Color.appOrange.opacity(0.1))
+                    .cornerRadius(8)
+                }
                 PhotosPicker(selection: $selectedItems, maxSelectionCount: 20, matching: .images) {
                     HStack(spacing: 4) {
                         Image(systemName: "plus")
@@ -223,4 +245,5 @@ struct OrderDetailView: View {
     NavigationStack {
         OrderDetailView(order: DummyData.orders[0]) { _ in }
     }
+    .environmentObject(ToastManager())
 }

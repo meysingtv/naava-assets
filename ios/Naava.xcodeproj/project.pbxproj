@@ -51,6 +51,9 @@
 		AA0000000000000000000063 /* AIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000062 /* AIChatView.swift */; };
 		AA0000000000000000000065 /* AIQuoteAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000064 /* AIQuoteAssistantView.swift */; };
 		AA0000000000000000000067 /* AIEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000066 /* AIEmailView.swift */; };
+		AA0000000000000000000069 /* WeatherForecastService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000068 /* WeatherForecastService.swift */; };
+		AA000000000000000000006B /* WeatherWarningCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000006A /* WeatherWarningCard.swift */; };
+		AA000000000000000000006D /* DamageAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000006C /* DamageAnalysisView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +102,9 @@
 		AA0000000000000000000062 /* AIChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIChatView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000064 /* AIQuoteAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIQuoteAssistantView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000066 /* AIEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEmailView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000068 /* WeatherForecastService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherForecastService.swift; sourceTree = "<group>"; };
+		AA000000000000000000006A /* WeatherWarningCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWarningCard.swift; sourceTree = "<group>"; };
+		AA000000000000000000006C /* DamageAnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DamageAnalysisView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +182,9 @@
 			AA0000000000000000000062 /* AIChatView.swift */,
 			AA0000000000000000000064 /* AIQuoteAssistantView.swift */,
 			AA0000000000000000000066 /* AIEmailView.swift */,
+			AA0000000000000000000068 /* WeatherForecastService.swift */,
+			AA000000000000000000006A /* WeatherWarningCard.swift */,
+			AA000000000000000000006C /* DamageAnalysisView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -292,6 +301,9 @@
 			AA0000000000000000000063 /* AIChatView.swift in Sources */,
 			AA0000000000000000000065 /* AIQuoteAssistantView.swift in Sources */,
 			AA0000000000000000000067 /* AIEmailView.swift in Sources */,
+			AA0000000000000000000069 /* WeatherForecastService.swift in Sources */,
+			AA000000000000000000006B /* WeatherWarningCard.swift in Sources */,
+			AA000000000000000000006D /* DamageAnalysisView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
