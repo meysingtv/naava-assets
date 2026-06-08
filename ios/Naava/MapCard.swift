@@ -4,10 +4,10 @@ import MapKit
 struct MapCard: View {
     let appointments: [Appointment]
 
-    @State private var region = MKCoordinateRegion(
+    @State private var position: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 51.1963, longitude: 6.4428),
         span: MKCoordinateSpan(latitudeDelta: 0.10, longitudeDelta: 0.10)
-    )
+    ))
     @State private var showFullMap = false
     @StateObject private var weather = WeatherService()
     @Environment(\.openURL) private var openURL
@@ -30,9 +30,11 @@ struct MapCard: View {
     // MARK: - Map layer
 
     private var mapLayer: some View {
-        Map(coordinateRegion: $region, annotationItems: appointments) { appt in
-            MapAnnotation(coordinate: appt.coordinate) {
-                DashboardPin(status: appt.status)
+        Map(position: $position) {
+            ForEach(appointments) { appt in
+                Annotation("", coordinate: appt.coordinate) {
+                    DashboardPin(status: appt.status)
+                }
             }
         }
         .allowsHitTesting(false)

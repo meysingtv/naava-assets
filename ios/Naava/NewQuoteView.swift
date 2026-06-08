@@ -173,7 +173,7 @@ private struct QuoteLineItemRow: View {
                     .frame(width: 56)
                     .font(.system(size: 13))
                     .foregroundColor(.appTextSecondary)
-                    .onChange(of: qtyText) { item.quantity = parseDouble($0) ?? item.quantity }
+                    .onChange(of: qtyText) { _, v in item.quantity = parseDouble(v) ?? item.quantity }
                     .onAppear { qtyText = formatNum(item.quantity) }
 
                 TextField("Einheit", text: $item.unit)
@@ -189,7 +189,7 @@ private struct QuoteLineItemRow: View {
                     .frame(width: 80)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.appTextPrimary)
-                    .onChange(of: priceText) { item.unitPrice = parseDouble($0) ?? item.unitPrice }
+                    .onChange(of: priceText) { _, v in item.unitPrice = parseDouble(v) ?? item.unitPrice }
                     .onAppear { priceText = formatNum(item.unitPrice) }
 
                 Text("€")

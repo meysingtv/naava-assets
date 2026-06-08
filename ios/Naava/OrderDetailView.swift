@@ -45,7 +45,7 @@ struct OrderDetailView: View {
                 Button(s.rawValue) { order.status = s; onUpdate(order) }
             }
         }
-        .onChange(of: selectedItems) { items in
+        .onChange(of: selectedItems) { _, items in
             Task {
                 var loaded: [UIImage] = []
                 for item in items {
@@ -212,7 +212,7 @@ struct OrderDetailView: View {
                 .font(.system(size: 14))
                 .foregroundColor(.appTextPrimary)
                 .lineLimit(3...8)
-                .onChange(of: order.notes) { _ in onUpdate(order) }
+                .onChange(of: order.notes) { _, _ in onUpdate(order) }
         }
         .padding(14)
         .cardStyle()
