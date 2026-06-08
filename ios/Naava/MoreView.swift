@@ -10,7 +10,7 @@ struct MoreView: View {
 
             Section("Verwaltung") {
                 NavRow(icon: "map.fill",              label: "Karte",       color: .appBlue)   { MapFullscreenView() }
-                NavRow(icon: "calendar",             label: "Kalender",    color: .appBlue)   { CalendarView() }
+                NavRow(icon: "calendar.badge.clock",  label: "Kalender & Planung", color: .appBlue) { PlanungView() }
                 NavRow(icon: "eurosign.circle.fill", label: "Rechnungen",  color: .appGreen)  { InvoicesView() }
                 NavRow(icon: "doc.text.fill",        label: "Angebote",    color: .appOrange) { QuotesView() }
                 NavRow(icon: "person.2.fill",        label: "Mitarbeiter", color: .appPurple) { EmployeesView() }

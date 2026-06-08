@@ -206,6 +206,62 @@ struct Employee: Identifiable {
     }
 }
 
+// MARK: - Absence Type
+enum AbsenceType: String, CaseIterable {
+    case urlaub      = "Urlaub"
+    case krank       = "Krank"
+    case fortbildung = "Fortbildung"
+    case sonstiges   = "Sonstiges"
+
+    var color: Color {
+        switch self {
+        case .urlaub:      return .appOrange
+        case .krank:       return .red
+        case .fortbildung: return .appPurple
+        case .sonstiges:   return .appTextSecondary
+        }
+    }
+    var icon: String {
+        switch self {
+        case .urlaub:      return "sun.max.fill"
+        case .krank:       return "cross.case.fill"
+        case .fortbildung: return "graduationcap.fill"
+        case .sonstiges:   return "ellipsis.circle.fill"
+        }
+    }
+}
+
+// MARK: - Absence
+struct Absence: Identifiable {
+    var id = UUID()
+    var employeeName: String
+    var type: AbsenceType
+    var startDate: Date
+    var endDate: Date
+    var note: String = ""
+
+    func covers(_ date: Date) -> Bool {
+        let cal = Calendar.current
+        let d = cal.startOfDay(for: date)
+        return d >= cal.startOfDay(for: startDate) && d <= cal.startOfDay(for: endDate)
+    }
+
+    var durationDays: Int {
+        let d = Calendar.current.dateComponents([.day], from: startDate, to: endDate).day ?? 0
+        return d + 1
+    }
+}
+
+// MARK: - Work Assignment
+struct WorkAssignment: Identifiable {
+    var id = UUID()
+    var employeeName: String
+    var orderTitle: String
+    var orderNumber: String
+    var date: Date
+    var color: Color
+}
+
 // MARK: - Time Entry
 struct TimeEntry: Identifiable {
     var id = UUID()
@@ -492,6 +548,37 @@ enum DummyData {
             issueDate: ago(2), validUntil: from(28)
         ),
     ]
+
+    static var absences: [Absence] = {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        func from(_ n: Int) -> Date { cal.date(byAdding: .day, value: n, to: today)! }
+        func ago(_ n: Int) -> Date  { cal.date(byAdding: .day, value: -n, to: today)! }
+        return [
+            Absence(employeeName: "Hans Weber",    type: .urlaub,
+                    startDate: from(3), endDate: from(9),   note: "Sommerurlaub"),
+            Absence(employeeName: "Klaus Fischer",  type: .krank,
+                    startDate: ago(1),  endDate: from(1)),
+            Absence(employeeName: "Anna Becker",   type: .fortbildung,
+                    startDate: from(7), endDate: from(7),   note: "Dachdecker-Tagung NRW"),
+        ]
+    }()
+
+    static var workAssignments: [WorkAssignment] = {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        func d(_ offset: Int) -> Date { cal.date(byAdding: .day, value: offset, to: today)! }
+        return [
+            WorkAssignment(employeeName: "Max Scheulen",  orderTitle: "Dachsanierung",       orderNumber: "AU-2026-012", date: d(0), color: .appBlue),
+            WorkAssignment(employeeName: "Hans Weber",    orderTitle: "Dachsanierung",       orderNumber: "AU-2026-012", date: d(0), color: .appBlue),
+            WorkAssignment(employeeName: "Klaus Fischer", orderTitle: "Dachrinne erneuern",  orderNumber: "AU-2026-011", date: d(0), color: .appGreen),
+            WorkAssignment(employeeName: "Max Scheulen",  orderTitle: "Neueindeckung Anbau", orderNumber: "AU-2026-010", date: d(1), color: .appOrange),
+            WorkAssignment(employeeName: "Klaus Fischer", orderTitle: "Dachsanierung",       orderNumber: "AU-2026-012", date: d(1), color: .appBlue),
+            WorkAssignment(employeeName: "Max Scheulen",  orderTitle: "Gaubenanbau",         orderNumber: "AU-2026-009", date: d(2), color: .appPurple),
+            WorkAssignment(employeeName: "Klaus Fischer", orderTitle: "Gaubenanbau",         orderNumber: "AU-2026-009", date: d(3), color: .appPurple),
+            WorkAssignment(employeeName: "Max Scheulen",  orderTitle: "Dachsanierung",       orderNumber: "AU-2026-012", date: d(4), color: .appBlue),
+        ]
+    }()
 
     static var timeEntries: [TimeEntry] = {
         let cal = Calendar.current

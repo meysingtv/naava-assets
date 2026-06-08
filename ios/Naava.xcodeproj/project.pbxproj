@@ -57,6 +57,7 @@
 		AA000000000000000000006F /* ZeiterfassungView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000006E /* ZeiterfassungView.swift */; };
 		AA0000000000000000000071 /* SignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000070 /* SignatureView.swift */; };
 		AA0000000000000000000073 /* MaterialCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000072 /* MaterialCalculatorView.swift */; };
+		AA0000000000000000000075 /* PlanungView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000074 /* PlanungView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +112,7 @@
 		AA000000000000000000006E /* ZeiterfassungView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeiterfassungView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000070 /* SignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000072 /* MaterialCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialCalculatorView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000074 /* PlanungView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanungView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +196,7 @@
 			AA000000000000000000006E /* ZeiterfassungView.swift */,
 			AA0000000000000000000070 /* SignatureView.swift */,
 			AA0000000000000000000072 /* MaterialCalculatorView.swift */,
+			AA0000000000000000000074 /* PlanungView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 			AA000000000000000000006F /* ZeiterfassungView.swift in Sources */,
 			AA0000000000000000000071 /* SignatureView.swift in Sources */,
 			AA0000000000000000000073 /* MaterialCalculatorView.swift in Sources */,
+			AA0000000000000000000075 /* PlanungView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
