@@ -45,6 +45,23 @@ struct StatItem: Identifiable {
     let color: Color
 }
 
+// MARK: - Customer
+struct Customer: Identifiable {
+    let id = UUID()
+    let firstName: String
+    let lastName: String
+    var company: String?
+    let phone: String
+    let email: String
+    let street: String
+    let city: String
+    let avatarColor: Color
+
+    var fullName: String { "\(firstName) \(lastName)" }
+    var initials: String { "\(firstName.prefix(1))\(lastName.prefix(1))" }
+    var displaySubtitle: String { company ?? "\(street), \(city)" }
+}
+
 // MARK: - Dummy Data
 enum DummyData {
     static let appointments: [Appointment] = [
@@ -72,6 +89,39 @@ enum DummyData {
             status: .open,
             coordinate: CLLocationCoordinate2D(latitude: 48.1520, longitude: 11.4620)
         ),
+    ]
+
+    static var customers: [Customer] = [
+        Customer(firstName: "Thomas",  lastName: "Bauer",
+                 company: nil,
+                 phone: "+49 89 123456",  email: "t.bauer@gmail.com",
+                 street: "Gartenweg 3",   city: "München-Pasing",
+                 avatarColor: .appBlue),
+        Customer(firstName: "Klaus",   lastName: "Müller",
+                 company: "Familie Müller",
+                 phone: "+49 89 654321",  email: "mueller@web.de",
+                 street: "Hauptstr. 12",  city: "München",
+                 avatarColor: .appGreen),
+        Customer(firstName: "Andrea",  lastName: "Schmidt",
+                 company: "Schmidt GmbH",
+                 phone: "+49 89 112233",  email: "info@schmidt-gmbh.de",
+                 street: "Industriestr. 45", city: "München",
+                 avatarColor: .appOrange),
+        Customer(firstName: "Claudia", lastName: "Weber",
+                 company: nil,
+                 phone: "+49 89 778899",  email: "c.weber@icloud.com",
+                 street: "Rosenstr. 7",   city: "München-Pasing",
+                 avatarColor: .appPurple),
+        Customer(firstName: "Peter",   lastName: "Maier",
+                 company: "Maier & Söhne",
+                 phone: "+49 89 334455",  email: "p.maier@maier-soehne.de",
+                 street: "Bergweg 22",    city: "München-Schwabing",
+                 avatarColor: .appBlue),
+        Customer(firstName: "Julia",   lastName: "Hofmann",
+                 company: nil,
+                 phone: "+49 89 556677",  email: "julia.hofmann@gmx.de",
+                 street: "Wiesenweg 5",   city: "Dachau",
+                 avatarColor: .appGreen),
     ]
 
     static let stats: [StatItem] = [
