@@ -5,11 +5,27 @@ struct WeatherWarningCard: View {
 
     var body: some View {
         Group {
-            if !service.forecast.isEmpty {
+            if service.forecast.isEmpty {
+                loadingCard
+            } else {
                 card
             }
         }
         .onAppear { service.fetchIfNeeded() }
+    }
+
+    private var loadingCard: some View {
+        HStack(spacing: 10) {
+            ProgressView().tint(.appBlue)
+            Text("Wetterdaten werden geladen…")
+                .font(.system(size: 13))
+                .foregroundColor(.appTextSecondary)
+            Spacer()
+        }
+        .padding(14)
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
     }
 
     private var card: some View {
