@@ -35,6 +35,7 @@
 		AA0000000000000000000043 /* CompanySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000042 /* CompanySetupView.swift */; };
 		AA0000000000000000000045 /* PlanSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000044 /* PlanSelectionView.swift */; };
 		AA0000000000000000000047 /* CompanyProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000046 /* CompanyProfileView.swift */; };
+		AA0000000000000000000049 /* MapFullscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000048 /* MapFullscreenView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		AA0000000000000000000042 /* CompanySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanySetupView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000044 /* PlanSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanSelectionView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000046 /* CompanyProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyProfileView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000048 /* MapFullscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapFullscreenView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 			AA0000000000000000000042 /* CompanySetupView.swift */,
 			AA0000000000000000000044 /* PlanSelectionView.swift */,
 			AA0000000000000000000046 /* CompanyProfileView.swift */,
+			AA0000000000000000000048 /* MapFullscreenView.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -228,6 +231,7 @@
 			AA0000000000000000000043 /* CompanySetupView.swift in Sources */,
 			AA0000000000000000000045 /* PlanSelectionView.swift in Sources */,
 			AA0000000000000000000047 /* CompanyProfileView.swift in Sources */,
+			AA0000000000000000000049 /* MapFullscreenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

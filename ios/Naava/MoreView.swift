@@ -9,6 +9,7 @@ struct MoreView: View {
             companyHeader
 
             Section("Verwaltung") {
+                NavRow(icon: "map.fill",              label: "Karte",       color: .appBlue)   { MapFullscreenView() }
                 NavRow(icon: "calendar",             label: "Kalender",    color: .appBlue)   { CalendarView() }
                 NavRow(icon: "eurosign.circle.fill", label: "Rechnungen",  color: .appGreen)  { InvoicesView() }
                 NavRow(icon: "doc.text.fill",        label: "Angebote",    color: .appOrange) { PlaceholderView(icon: "doc.text.fill", title: "Angebote", subtitle: "Kommt bald") }
