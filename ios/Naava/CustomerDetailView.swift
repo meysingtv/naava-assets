@@ -3,6 +3,7 @@ import SwiftUI
 struct CustomerDetailView: View {
     let customer: Customer
     @Environment(\.openURL) private var openURL
+    @EnvironmentObject private var toast: ToastManager
 
     private let recentJobs: [(title: String, date: String, status: AppointmentStatus)] = [
         ("Dachsanierung",      "12.05.2026", .inProgress),
@@ -138,45 +139,121 @@ struct CustomerDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             sectionTitle("Kontakt")
             VStack(spacing: 0) {
-                contactRow(icon: "phone.fill",    color: .appGreen,  value: customer.phone)
+                contactRow(icon: "phone.fill", color: .appGreen, label: "Festnetz", value: customer.phone) {
+                    openTel(customer.phone)
+                }
 
                 if !customer.mobile.isEmpty {
                     Divider().padding(.leading, 52)
-                    contactRow(icon: "iphone",    color: .appBlue,   value: customer.mobile)
+                    contactRow(icon: "iphone", color: .appBlue, label: "Mobil", value: customer.mobile) {
+                        openTel(customer.mobile)
+                    }
                 }
 
                 Divider().padding(.leading, 52)
-                contactRow(icon: "envelope.fill", color: .appBlue,   value: customer.email)
+                contactRow(icon: "envelope.fill", color: .appBlue, label: "E-Mail", value: customer.email) {
+                    if let url = URL(string: "mailto:\(customer.email)") {
+                        openURL(url)
+                    }
+                }
 
                 if !customer.website.isEmpty {
                     Divider().padding(.leading, 52)
-                    contactRow(icon: "globe",     color: .appPurple, value: customer.website)
+                    contactRow(icon: "globe", color: .appPurple, label: "Website", value: customer.website) {
+                        let raw = customer.website
+                        let prefixed = raw.lowercased().hasPrefix("http") ? raw : "https://\(raw)"
+                        if let url = URL(string: prefixed) {
+                            openURL(url)
+                        }
+                    }
                 }
 
                 Divider().padding(.leading, 52)
-                contactRow(icon: "mappin.fill",   color: .appOrange, value: "\(customer.street)\n\(customer.city)")
+                addressRow
             }
             .cardStyle()
         }
     }
 
-    private func contactRow(icon: String, color: Color, value: String) -> some View {
-        HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 7)
-                    .fill(color.opacity(0.12))
-                    .frame(width: 30, height: 30)
-                Image(systemName: icon)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(color)
+    // MARK: - Address row with house watermark
+
+    private var addressRow: some View {
+        let fullAddress = "\(customer.street)\n\(customer.city)"
+        return ZStack(alignment: .trailing) {
+            // Subtle house watermark in empty background
+            Image(systemName: "house.fill")
+                .font(.system(size: 78, weight: .regular))
+                .foregroundColor(.appOrange.opacity(0.07))
+                .rotationEffect(.degrees(-8))
+                .offset(x: 20, y: 2)
+                .allowsHitTesting(false)
+
+            contactRow(icon: "mappin.fill", color: .appOrange, label: "Adresse", value: fullAddress) {
+                let encoded = "\(customer.street), \(customer.city)"
+                    .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                if let url = URL(string: "maps://?q=\(encoded)") {
+                    openURL(url)
+                }
             }
-            Text(value)
-                .font(.system(size: 14))
-                .foregroundColor(.appTextPrimary)
-            Spacer()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 11)
+        .clipped()
+    }
+
+    private func contactRow(icon: String, color: Color, label: String, value: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7)
+                        .fill(color.opacity(0.12))
+                        .frame(width: 30, height: 30)
+                    Image(systemName: icon)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(color)
+                }
+                Text(value)
+                    .font(.system(size: 14))
+                    .foregroundColor(.appTextPrimary)
+                    .multilineTextAlignment(.leading)
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 11)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                action()
+            } label: {
+                Label(actionTitle(for: label), systemImage: actionIcon(for: label))
+            }
+            Button {
+                UIPasteboard.general.string = value.replacingOccurrences(of: "\n", with: ", ")
+                toast.show("\(label) kopiert", style: .success, icon: "doc.on.doc.fill")
+            } label: {
+                Label("Kopieren", systemImage: "doc.on.doc")
+            }
+        }
+    }
+
+    private func actionTitle(for label: String) -> String {
+        switch label {
+        case "Festnetz", "Mobil": return "Anrufen"
+        case "E-Mail":            return "E-Mail schreiben"
+        case "Website":           return "Website öffnen"
+        case "Adresse":           return "In Karten öffnen"
+        default:                  return "Öffnen"
+        }
+    }
+
+    private func actionIcon(for label: String) -> String {
+        switch label {
+        case "Festnetz", "Mobil": return "phone.fill"
+        case "E-Mail":            return "envelope.fill"
+        case "Website":           return "globe"
+        case "Adresse":           return "map.fill"
+        default:                  return "arrow.up.right"
+        }
     }
 
     // MARK: - Notizen
@@ -279,4 +356,5 @@ private struct ActionChip: View {
     NavigationStack {
         CustomerDetailView(customer: DummyData.customers[0])
     }
+    .environmentObject(ToastManager())
 }
