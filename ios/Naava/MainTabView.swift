@@ -1,9 +1,14 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var selectedTab = 0
-    @State private var showNewSheet = false
-    @State private var showNewQuote = false
+    @State private var selectedTab     = 0
+    @State private var showNewSheet    = false
+    @State private var showNewOrder    = false
+    @State private var showNewInvoice  = false
+    @State private var showNewQuote    = false
+    @State private var showNewCustomer = false
+
+    @EnvironmentObject private var toast: ToastManager
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -20,15 +25,34 @@ struct MainTabView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showNewSheet) {
-            NewActionSheet(onNewQuote: {
-                showNewSheet = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                    showNewQuote = true
-                }
-            })
+            NewActionSheet(
+                onNewOrder:    { showNewSheet = false; DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { showNewOrder    = true } },
+                onNewInvoice:  { showNewSheet = false; DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { showNewInvoice  = true } },
+                onNewQuote:    { showNewSheet = false; DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { showNewQuote    = true } },
+                onNewCustomer: { showNewSheet = false; DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { showNewCustomer = true } }
+            )
+        }
+        .sheet(isPresented: $showNewOrder) {
+            NewOrderView { _ in
+                toast.show("Auftrag erstellt", style: .success, icon: "briefcase.fill")
+            }
+        }
+        .sheet(isPresented: $showNewInvoice) {
+            NewInvoiceView { invoice in
+                DummyData.invoices.insert(invoice, at: 0)
+                toast.show("Rechnung erstellt", style: .success, icon: "eurosign.circle.fill")
+            }
         }
         .sheet(isPresented: $showNewQuote) {
-            NewQuoteView { _ in }
+            NewQuoteView { _ in
+                toast.show("Angebot erstellt", style: .success, icon: "doc.text.fill")
+            }
+        }
+        .sheet(isPresented: $showNewCustomer) {
+            NewCustomerView { customer in
+                DummyData.customers.append(customer)
+                toast.show("Kunde gespeichert", style: .success, icon: "person.badge.plus")
+            }
         }
     }
 }
@@ -119,7 +143,10 @@ private struct TabBarButton: View {
 
 private struct NewActionSheet: View {
     @Environment(\.dismiss) private var dismiss
-    var onNewQuote: () -> Void = {}
+    var onNewOrder:    () -> Void = {}
+    var onNewInvoice:  () -> Void = {}
+    var onNewQuote:    () -> Void = {}
+    var onNewCustomer: () -> Void = {}
 
     private let actions: [(icon: String, title: String, subtitle: String, color: Color)] = [
         ("briefcase.fill",       "Neuer Auftrag",  "Baustelle anlegen",    .appBlue),
@@ -133,7 +160,13 @@ private struct NewActionSheet: View {
             VStack(spacing: 0) {
                 ForEach(actions, id: \.title) { action in
                     Button(action: {
-                        if action.title == "Neues Angebot" { onNewQuote() } else { dismiss() }
+                        switch action.title {
+                        case "Neuer Auftrag":  onNewOrder()
+                        case "Neues Angebot":  onNewQuote()
+                        case "Neue Rechnung":  onNewInvoice()
+                        case "Neuer Kunde":    onNewCustomer()
+                        default:               dismiss()
+                        }
                     }) {
                         HStack(spacing: 14) {
                             ZStack {
