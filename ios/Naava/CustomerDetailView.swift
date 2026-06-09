@@ -16,6 +16,9 @@ struct CustomerDetailView: View {
                 header
                 actionButtons
                 contactSection
+                if !customer.notes.isEmpty {
+                    notesSection
+                }
                 jobsSection
             }
             .padding(.horizontal, 16)
@@ -41,7 +44,11 @@ struct CustomerDetailView: View {
                 )
 
             VStack(spacing: 4) {
-                Text(customer.fullName)
+                // Show salutation before name if non-empty
+                let displayName = customer.salutation.isEmpty
+                    ? customer.fullName
+                    : "\(customer.salutation) \(customer.fullName)"
+                Text(displayName)
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(.appTextPrimary)
                 if let company = customer.company {
@@ -50,8 +57,29 @@ struct CustomerDetailView: View {
                         .foregroundColor(.appTextSecondary)
                 }
             }
+
+            customerTypeBadge
         }
         .padding(.top, 8)
+    }
+
+    // MARK: - Customer Type Badge
+
+    private var customerTypeBadge: some View {
+        HStack(spacing: 5) {
+            Image(systemName: customer.customerType.icon)
+                .font(.system(size: 11, weight: .semibold))
+            Text(customer.customerType.rawValue)
+                .font(.system(size: 12, weight: .semibold))
+        }
+        .foregroundColor(customer.customerType == .business ? .appPurple : .appBlue)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(
+            (customer.customerType == .business ? Color.appPurple : Color.appBlue)
+                .opacity(0.1)
+        )
+        .clipShape(Capsule())
     }
 
     // MARK: - Action Buttons
@@ -79,8 +107,20 @@ struct CustomerDetailView: View {
             sectionTitle("Kontakt")
             VStack(spacing: 0) {
                 contactRow(icon: "phone.fill",    color: .appGreen,  value: customer.phone)
+
+                if !customer.mobile.isEmpty {
+                    Divider().padding(.leading, 52)
+                    contactRow(icon: "iphone",    color: .appBlue,   value: customer.mobile)
+                }
+
                 Divider().padding(.leading, 52)
                 contactRow(icon: "envelope.fill", color: .appBlue,   value: customer.email)
+
+                if !customer.website.isEmpty {
+                    Divider().padding(.leading, 52)
+                    contactRow(icon: "globe",     color: .appPurple, value: customer.website)
+                }
+
                 Divider().padding(.leading, 52)
                 contactRow(icon: "mappin.fill",   color: .appOrange, value: "\(customer.street)\n\(customer.city)")
             }
@@ -105,6 +145,22 @@ struct CustomerDetailView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 11)
+    }
+
+    // MARK: - Notizen
+
+    private var notesSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionTitle("Notizen")
+            VStack(alignment: .leading, spacing: 8) {
+                Text(customer.notes)
+                    .font(.system(size: 14))
+                    .foregroundColor(.appTextPrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(14)
+            .cardStyle()
+        }
     }
 
     // MARK: - Aufträge

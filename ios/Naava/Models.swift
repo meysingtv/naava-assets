@@ -45,17 +45,39 @@ struct StatItem: Identifiable {
     let color: Color
 }
 
+// MARK: - Customer Type
+
+enum CustomerType: String, CaseIterable {
+    case person   = "Privatkunde"
+    case business = "Geschäftskunde"
+    var icon: String {
+        switch self {
+        case .person:   return "person.fill"
+        case .business: return "building.2.fill"
+        }
+    }
+}
+
 // MARK: - Customer
+
 struct Customer: Identifiable {
     let id = UUID()
-    let firstName: String
-    let lastName: String
+    var firstName: String
+    var lastName: String
     var company: String?
-    let phone: String
-    let email: String
-    let street: String
-    let city: String
-    let avatarColor: Color
+    var customerType: CustomerType = .person
+    var salutation: String = ""
+    var phone: String
+    var mobile: String = ""
+    var fax: String = ""
+    var email: String
+    var website: String = ""
+    var street: String
+    var zip: String = ""
+    var city: String
+    var avatarColor: Color
+    var taxId: String = ""
+    var notes: String = ""
 
     var fullName: String { "\(firstName) \(lastName)" }
     var initials: String { "\(firstName.prefix(1))\(lastName.prefix(1))" }
@@ -87,16 +109,57 @@ enum OrderStatus: String, CaseIterable {
     }
 }
 
+// MARK: - Order Priority
+
+enum OrderPriority: String, CaseIterable {
+    case low    = "Niedrig"
+    case normal = "Normal"
+    case high   = "Hoch"
+    case urgent = "Dringend"
+
+    var color: Color {
+        switch self {
+        case .low:    return .appTextSecondary
+        case .normal: return .appBlue
+        case .high:   return .appOrange
+        case .urgent: return .red
+        }
+    }
+    var icon: String {
+        switch self {
+        case .low:    return "arrow.down.circle"
+        case .normal: return "minus.circle"
+        case .high:   return "arrow.up.circle"
+        case .urgent: return "exclamationmark.circle.fill"
+        }
+    }
+}
+
+// MARK: - Order Type
+
+enum OrderType: String, CaseIterable {
+    case neueindeckung = "Neueindeckung"
+    case sanierung     = "Sanierung"
+    case wartung       = "Wartung"
+    case reparatur     = "Reparatur"
+    case inspektion    = "Inspektion"
+    case sonstiges     = "Sonstiges"
+}
+
 // MARK: - Order
+
 struct Order: Identifiable {
     var id = UUID()
     var number: String
     var title: String
+    var orderType: OrderType = .sonstiges
+    var priority: OrderPriority = .normal
     var customerName: String
     var address: String
     var description: String
     var status: OrderStatus
     var date: Date
+    var endDate: Date? = nil
     var estimatedHours: Double?
     var notes: String = ""
 }
