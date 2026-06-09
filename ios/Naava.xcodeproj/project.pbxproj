@@ -59,6 +59,7 @@
 		AA0000000000000000000073 /* MaterialCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000072 /* MaterialCalculatorView.swift */; };
 		AA0000000000000000000075 /* PlanungView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000074 /* PlanungView.swift */; };
 		AA0000000000000000000077 /* NewInvoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000076 /* NewInvoiceView.swift */; };
+		AA0000000000000000000079 /* CompanyLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000078 /* CompanyLocationService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -115,6 +116,7 @@
 		AA0000000000000000000072 /* MaterialCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialCalculatorView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000074 /* PlanungView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanungView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000076 /* NewInvoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000078 /* CompanyLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyLocationService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +202,7 @@
 			AA0000000000000000000072 /* MaterialCalculatorView.swift */,
 			AA0000000000000000000074 /* PlanungView.swift */,
 			AA0000000000000000000076 /* NewInvoiceView.swift */,
+			AA0000000000000000000078 /* CompanyLocationService.swift */,
 			);
 			path = Naava;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 			AA0000000000000000000073 /* MaterialCalculatorView.swift in Sources */,
 			AA0000000000000000000075 /* PlanungView.swift in Sources */,
 			AA0000000000000000000077 /* NewInvoiceView.swift in Sources */,
+			AA0000000000000000000079 /* CompanyLocationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

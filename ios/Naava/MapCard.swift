@@ -10,6 +10,8 @@ struct MapCard: View {
     ))
     @State private var showFullMap = false
     @StateObject private var weather = WeatherService()
+    @StateObject private var hq = CompanyLocationService()
+    @EnvironmentObject private var appState: AppState
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -24,6 +26,7 @@ struct MapCard: View {
         .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 3)
         .sheet(isPresented: $showFullMap) {
             NavigationStack { MapFullscreenView() }
+                .environmentObject(appState)
         }
     }
 
@@ -31,6 +34,11 @@ struct MapCard: View {
 
     private var mapLayer: some View {
         Map(position: $position) {
+            if let hqCoord = hq.coordinate {
+                Annotation("", coordinate: hqCoord) {
+                    CompanyHQPin()
+                }
+            }
             ForEach(appointments) { appt in
                 Annotation("", coordinate: appt.coordinate) {
                     DashboardPin(status: appt.status)
@@ -40,6 +48,15 @@ struct MapCard: View {
         .allowsHitTesting(false)
         .overlay(alignment: .topTrailing) { weatherBadge }
         .overlay(alignment: .topLeading)  { expandButton }
+        .onAppear {
+            hq.updateIfNeeded(street: appState.companyStreet, city: appState.companyCity)
+        }
+        .onChange(of: appState.companyStreet) { _, _ in
+            hq.updateIfNeeded(street: appState.companyStreet, city: appState.companyCity)
+        }
+        .onChange(of: appState.companyCity) { _, _ in
+            hq.updateIfNeeded(street: appState.companyStreet, city: appState.companyCity)
+        }
     }
 
     private var weatherBadge: some View {
@@ -117,6 +134,30 @@ private struct DashboardPin: View {
     }
 }
 
+// MARK: - Company HQ Pin
+
+private struct CompanyHQPin: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            ZStack {
+                Circle()
+                    .fill(Color.appBlue)
+                    .frame(width: 30, height: 30)
+                Circle()
+                    .stroke(Color.white, lineWidth: 2.5)
+                    .frame(width: 30, height: 30)
+                Image(systemName: "house.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.white)
+            }
+            .shadow(color: Color.appBlue.opacity(0.55), radius: 5, x: 0, y: 2)
+            Triangle()
+                .fill(Color.appBlue)
+                .frame(width: 8, height: 5)
+        }
+    }
+}
+
 private struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         var p = Path()
@@ -132,4 +173,5 @@ private struct Triangle: Shape {
     MapCard(appointments: DummyData.appointments)
         .padding()
         .background(Color.appBackground)
+        .environmentObject(AppState())
 }

@@ -26,6 +26,7 @@ private struct NaavaMapView: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
     var mapType: MKMapType
     var items: [MapItem]
+    var hqCoordinate: CLLocationCoordinate2D?
     var selectedItem: MapItem?
     var onSelect: (MapItem?) -> Void
 
@@ -49,14 +50,19 @@ private struct NaavaMapView: UIViewRepresentable {
             mv.setRegion(region, animated: true)
         }
 
-        // Rebuild annotations when items change
+        // Rebuild annotations when items or HQ change
         let existing = mv.annotations.compactMap { $0 as? MapPin }
         let existingIds = Set(existing.map { $0.item.id })
         let newIds = Set(items.map { $0.id })
+        let hasHQ = mv.annotations.contains(where: { $0 is HQAnnotation })
+        let needsHQ = hqCoordinate != nil
 
-        if existingIds != newIds {
+        if existingIds != newIds || hasHQ != needsHQ {
             mv.removeAnnotations(mv.annotations)
             mv.addAnnotations(items.map { MapPin(item: $0) })
+            if let c = hqCoordinate {
+                mv.addAnnotation(HQAnnotation(coordinate: c))
+            }
         }
 
         // Selection state
@@ -77,6 +83,17 @@ private struct NaavaMapView: UIViewRepresentable {
         init(_ p: NaavaMapView) { parent = p }
 
         func mapView(_ mv: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            if annotation is HQAnnotation {
+                let id = "naava-hq"
+                let view = mv.dequeueReusableAnnotationView(withIdentifier: id) as? MKMarkerAnnotationView
+                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: id)
+                view.annotation = annotation
+                view.markerTintColor = UIColor(Color.appBlue)
+                view.glyphImage = UIImage(systemName: "house.fill")
+                view.canShowCallout = true
+                view.displayPriority = .required
+                return view
+            }
             guard let pin = annotation as? MapPin else { return nil }
             let id = "naava-pin"
             let view = mv.dequeueReusableAnnotationView(withIdentifier: id) as? MKMarkerAnnotationView
@@ -107,6 +124,12 @@ private class MapPin: NSObject, MKAnnotation {
     init(item: MapItem) { self.item = item }
 }
 
+private class HQAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    var title: String? { "Firmensitz" }
+    init(coordinate: CLLocationCoordinate2D) { self.coordinate = coordinate }
+}
+
 // MARK: - Full Screen Map
 
 struct MapFullscreenView: View {
@@ -123,6 +146,8 @@ struct MapFullscreenView: View {
     @State private var showWeather = false
     @StateObject private var weather = WeatherService()
     @StateObject private var forecast = WeatherForecastService()
+    @StateObject private var hq = CompanyLocationService()
+    @EnvironmentObject private var appState: AppState
 
     private var filtered: [MapItem] {
         guard let f = filter else { return MapItem.all }
@@ -168,6 +193,7 @@ struct MapFullscreenView: View {
         .onAppear {
             weather.fetchIfNeeded()
             forecast.fetchIfNeeded()
+            hq.updateIfNeeded(street: appState.companyStreet, city: appState.companyCity)
         }
     }
 
@@ -178,6 +204,7 @@ struct MapFullscreenView: View {
             region: $region,
             mapType: useHybrid ? .hybrid : .standard,
             items: filtered,
+            hqCoordinate: hq.coordinate,
             selectedItem: selectedItem
         ) { tapped in
             withAnimation(.spring(response: 0.35)) {
@@ -515,4 +542,5 @@ private struct PinDetailCard: View {
 
 #Preview {
     NavigationStack { MapFullscreenView() }
+        .environmentObject(AppState())
 }

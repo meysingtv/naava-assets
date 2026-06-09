@@ -85,18 +85,50 @@ struct CustomerDetailView: View {
     // MARK: - Action Buttons
 
     private var actionButtons: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             ActionChip(icon: "phone.fill", label: "Anrufen", color: .appGreen) {
-                if let url = URL(string: "tel://\(customer.phone.filter(\.isNumber))") {
-                    openURL(url)
-                }
+                openTel(customer.phone)
             }
-            ActionChip(icon: "envelope.fill", label: "E-Mail", color: .appBlue) {
+            ActionChip(icon: "message.fill", label: "SMS", color: .appBlue) {
+                openSMS(preferredNumber)
+            }
+            ActionChip(icon: "bubble.left.fill", label: "WhatsApp", color: Color(red: 0.15, green: 0.69, blue: 0.36)) {
+                openWhatsApp(preferredNumber)
+            }
+            ActionChip(icon: "envelope.fill", label: "E-Mail", color: .appOrange) {
                 if let url = URL(string: "mailto:\(customer.email)") {
                     openURL(url)
                 }
             }
-            ActionChip(icon: "briefcase.fill", label: "Auftrag", color: .appOrange) {}
+        }
+    }
+
+    // MARK: - Communication helpers
+
+    /// Prefer mobile number for SMS/WhatsApp, fall back to main phone.
+    private var preferredNumber: String {
+        customer.mobile.isEmpty ? customer.phone : customer.mobile
+    }
+
+    private func openTel(_ raw: String) {
+        let digits = raw.filter { $0.isNumber || $0 == "+" }
+        if let url = URL(string: "tel://\(digits)") { openURL(url) }
+    }
+
+    private func openSMS(_ raw: String) {
+        let digits = raw.filter { $0.isNumber || $0 == "+" }
+        if let url = URL(string: "sms:\(digits)") { openURL(url) }
+    }
+
+    private func openWhatsApp(_ raw: String) {
+        // WhatsApp expects international format without "+" or spaces.
+        var digits = raw.filter { $0.isNumber }
+        // If number starts with 0 (German local format), prepend country code 49.
+        if digits.hasPrefix("0") {
+            digits = "49" + digits.dropFirst()
+        }
+        if let url = URL(string: "https://wa.me/\(digits)") {
+            openURL(url)
         }
     }
 
