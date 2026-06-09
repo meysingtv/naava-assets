@@ -18,6 +18,7 @@ struct NewOrderView: View {
     @State private var description    = ""
     @State private var notes          = ""
     @State private var showCustomerPicker = false
+    @State private var showNewCustomer    = false
 
     private var isValid: Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -55,7 +56,25 @@ struct NewOrderView: View {
                 }
             }
             .sheet(isPresented: $showCustomerPicker) {
-                OrderCustomerPickerSheet { customer in
+                OrderCustomerPickerSheet(
+                    onSelect: { customer in
+                        customerName    = customer.company ?? customer.fullName
+                        customerAddress = "\(customer.street)\n\(customer.zip) \(customer.city)"
+                        if address.isEmpty {
+                            address = "\(customer.street), \(customer.zip) \(customer.city)"
+                        }
+                    },
+                    onNew: {
+                        showCustomerPicker = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                            showNewCustomer = true
+                        }
+                    }
+                )
+            }
+            .sheet(isPresented: $showNewCustomer) {
+                NewCustomerView { customer in
+                    DummyData.customers.append(customer)
                     customerName    = customer.company ?? customer.fullName
                     customerAddress = "\(customer.street)\n\(customer.zip) \(customer.city)"
                     if address.isEmpty {
@@ -231,35 +250,67 @@ struct NewOrderView: View {
 
 private struct OrderCustomerPickerSheet: View {
     var onSelect: (Customer) -> Void
+    var onNew: () -> Void
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            List(DummyData.customers) { customer in
-                Button {
-                    onSelect(customer)
+            List {
+                Button(action: {
                     dismiss()
-                } label: {
+                    onNew()
+                }) {
                     HStack(spacing: 12) {
-                        Circle()
-                            .fill(customer.avatarColor.opacity(0.15))
-                            .frame(width: 40, height: 40)
-                            .overlay(
-                                Text(customer.initials)
-                                    .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(customer.avatarColor)
-                            )
+                        ZStack {
+                            Circle()
+                                .fill(Color.appBlue.opacity(0.15))
+                                .frame(width: 40, height: 40)
+                            Image(systemName: "person.badge.plus")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.appBlue)
+                        }
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(customer.fullName)
+                            Text("Neuer Kunde")
                                 .font(.system(size: 15, weight: .semibold))
-                                .foregroundColor(.appTextPrimary)
-                            Text("\(customer.street), \(customer.zip) \(customer.city)")
+                                .foregroundColor(.appBlue)
+                            Text("Direkt während des Auftrags anlegen")
                                 .font(.system(size: 12))
                                 .foregroundColor(.appTextSecondary)
                         }
                         Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12))
+                            .foregroundColor(.appTextSecondary)
                     }
                     .padding(.vertical, 3)
+                }
+
+                ForEach(DummyData.customers) { customer in
+                    Button {
+                        onSelect(customer)
+                        dismiss()
+                    } label: {
+                        HStack(spacing: 12) {
+                            Circle()
+                                .fill(customer.avatarColor.opacity(0.15))
+                                .frame(width: 40, height: 40)
+                                .overlay(
+                                    Text(customer.initials)
+                                        .font(.system(size: 14, weight: .bold))
+                                        .foregroundColor(customer.avatarColor)
+                                )
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(customer.fullName)
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundColor(.appTextPrimary)
+                                Text("\(customer.street), \(customer.zip) \(customer.city)")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.appTextSecondary)
+                            }
+                            Spacer()
+                        }
+                        .padding(.vertical, 3)
+                    }
                 }
             }
             .listStyle(.plain)
