@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#EC0016" />
+  <title>Bahn & Bus Verbindungen</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #EC0016;
+      --dark: #131821;
+      --card: #1e2530;
+      --border: #2e3848;
+      --text: #f0f4f8;
+      --muted: #8899aa;
+      --green: #22c55e;
+      --yellow: #facc15;
+      --orange: #f97316;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100dvh;
+    }
+
+    header {
+      background: var(--red);
+      padding: 16px 20px 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    header p {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: var(--dark);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--red);
+    }
+
+    .input-group input::placeholder {
+      color: var(--muted);
+    }
+
+    .suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      z-index: 200;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      margin-top: 4px;
+    }
+
+    .suggestion-item {
+      padding: 13px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:active, .suggestion-item:hover { background: var(--border); }
+
+    .suggestion-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .swap-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 4px 0;
+    }
+
+    .swap-btn button {
+      background: var(--border);
+      border: none;
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 0.2s;
+    }
+
+    .swap-btn button:active { background: var(--red); }
+
+    .time-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .time-row select, .time-row input[type="time"], .time-row input[type="date"] {
+      flex: 1;
+      background: var(--dark);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      appearance: none;
+    }
+
+    .search-btn {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: opacity 0.2s;
+    }
+
+    .search-btn:active { opacity: 0.85; }
+    .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .results-header {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding: 0 2px;
+    }
+
+    .journey-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .journey-summary {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .journey-times {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .journey-times .time {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .journey-times .station {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .journey-duration {
+      text-align: center;
+      flex: 1;
+    }
+
+    .journey-duration .dur {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .journey-duration .changes {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .line-pills {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 6px;
+    }
+
+    .line-pill {
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .delay-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .delay-ok { background: rgba(34,197,94,0.15); color: var(--green); }
+    .delay-warn { background: rgba(249,115,22,0.15); color: var(--orange); }
+    .delay-late { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+    .journey-detail {
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: none;
+    }
+
+    .journey-detail.open { display: block; }
+
+    .leg {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      position: relative;
+    }
+
+    .leg-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 28px;
+      flex-shrink: 0;
+    }
+
+    .leg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--muted);
+      border: 2px solid var(--dark);
+      flex-shrink: 0;
+    }
+
+    .leg-dot.start { background: var(--green); }
+    .leg-dot.end { background: var(--red); }
+
+    .leg-track {
+      width: 2px;
+      flex: 1;
+      background: var(--border);
+      min-height: 30px;
+    }
+
+    .leg-info { flex: 1; }
+
+    .leg-station {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .leg-time {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .leg-transport {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+    }
+
+    .leg-transport .line-pill {
+      font-size: 12px;
+    }
+
+    .leg-transport .direction {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .walk-leg {
+      opacity: 0.7;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .spinner {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .spinner::after {
+      content: '';
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #ef4444;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Bahn & Bus Verbindungen</h1>
+  <p>Deutschland — DB, S-Bahn, Bus, U-Bahn</p>
+</header>
+
+<div class="container">
+  <div class="search-card">
+    <div class="input-group" id="from-group">
+      <label>Von</label>
+      <input type="text" id="from-input" placeholder="Startbahnhof" autocomplete="off" />
+      <div class="suggestions" id="from-suggestions" style="display:none"></div>
+    </div>
+
+    <div class="swap-btn">
+      <button onclick="swapStations()" title="Tauschen">⇅</button>
+    </div>
+
+    <div class="input-group" id="to-group">
+      <label>Nach</label>
+      <input type="text" id="to-input" placeholder="Zielbahnhof" autocomplete="off" />
+      <div class="suggestions" id="to-suggestions" style="display:none"></div>
+    </div>
+
+    <div class="time-row">
+      <select id="dep-arr">
+        <option value="departure">Abfahrt</option>
+        <option value="arrival">Ankunft</option>
+      </select>
+      <input type="date" id="travel-date" />
+      <input type="time" id="travel-time" />
+    </div>
+
+    <button class="search-btn" id="search-btn" onclick="searchJourneys()">
+      Verbindungen suchen
+    </button>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+  const API = 'https://v6.db.transport.rest';
+  let fromStation = null, toStation = null;
+  let searchTimeout = {};
+
+  // Init date/time to now
+  const now = new Date();
+  document.getElementById('travel-date').value = now.toISOString().split('T')[0];
+  document.getElementById('travel-time').value = now.toTimeString().slice(0,5);
+
+  function productColor(name) {
+    if (!name) return '#555';
+    name = name.toLowerCase();
+    if (name.includes('ice') || name.includes('ic') || name.includes('ec')) return '#EC0016';
+    if (name.includes('re') || name.includes('rb')) return '#006AB3';
+    if (name.includes('s')) return '#008D4F';
+    if (name.includes('u')) return '#213A8F';
+    if (name.includes('tram') || name.includes('str')) return '#CE0037';
+    if (name.includes('bus') || name.includes('nachtbus')) return '#A3007C';
+    if (name.includes('fern') || name.includes('flx')) return '#FF8000';
+    return '#555';
+  }
+
+  function productIcon(type) {
+    const t = (type || '').toLowerCase();
+    if (t === 'nationalexpress' || t === 'national') return '🚄';
+    if (t === 'regionalexpress' || t === 'regional') return '🚆';
+    if (t === 'suburban') return '🚊';
+    if (t === 'subway') return '🚇';
+    if (t === 'tram') return '🚋';
+    if (t === 'bus') return '🚌';
+    if (t === 'ferry') return '⛴';
+    if (t === 'taxi') return '🚕';
+    return '🚉';
+  }
+
+  async function fetchSuggestions(query, field) {
+    if (query.length < 2) {
+      document.getElementById(`${field}-suggestions`).style.display = 'none';
+      return;
+    }
+    try {
+      const res = await fetch(`${API}/locations?query=${encodeURIComponent(query)}&results=6&stops=true&addresses=false&poi=false`);
+      const data = await res.json();
+      showSuggestions(data, field);
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  function showSuggestions(items, field) {
+    const box = document.getElementById(`${field}-suggestions`);
+    if (!items || items.length === 0) { box.style.display = 'none'; return; }
+    box.innerHTML = items.map(s => `
+      <div class="suggestion-item" onclick="selectStation(${JSON.stringify(s).replace(/"/g,'&quot;')}, '${field}')">
+        <div class="suggestion-icon">${productIcon(s.products ? Object.keys(s.products).find(k => s.products[k]) : '')}</div>
+        <div>
+          <div style="font-size:15px">${s.name}</div>
+          ${s.location ? `<div style="font-size:11px;color:var(--muted)">${[s.state, s.country].filter(Boolean).join(', ')}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+    box.style.display = 'block';
+  }
+
+  function selectStation(station, field) {
+    document.getElementById(`${field}-input`).value = station.name;
+    document.getElementById(`${field}-suggestions`).style.display = 'none';
+    if (field === 'from') fromStation = station;
+    else toStation = station;
+  }
+
+  function swapStations() {
+    const fi = document.getElementById('from-input');
+    const ti = document.getElementById('to-input');
+    [fi.value, ti.value] = [ti.value, fi.value];
+    [fromStation, toStation] = [toStation, fromStation];
+  }
+
+  function setupInput(field) {
+    const input = document.getElementById(`${field}-input`);
+    input.addEventListener('input', () => {
+      clearTimeout(searchTimeout[field]);
+      searchTimeout[field] = setTimeout(() => fetchSuggestions(input.value.trim(), field), 280);
+    });
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        document.getElementById(`${field}-suggestions`).style.display = 'none';
+      }, 200);
+    });
+    input.addEventListener('focus', () => {
+      if (input.value.length >= 2) fetchSuggestions(input.value, field);
+    });
+  }
+
+  setupInput('from');
+  setupInput('to');
+
+  function formatTime(isoStr) {
+    if (!isoStr) return '--:--';
+    return new Date(isoStr).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatDuration(dep, arr) {
+    const ms = new Date(arr) - new Date(dep);
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    return h > 0 ? `${h}h ${m}min` : `${m} min`;
+  }
+
+  function delayMinutes(planned, actual) {
+    if (!actual || !planned) return 0;
+    return Math.round((new Date(actual) - new Date(planned)) / 60000);
+  }
+
+  function delayBadge(dep) {
+    const d = delayMinutes(dep.plannedDeparture || dep.plannedArrival, dep.departure || dep.arrival);
+    if (d <= 0) return `<span class="delay-badge delay-ok">Pünktlich</span>`;
+    if (d < 6) return `<span class="delay-badge delay-warn">+${d} min</span>`;
+    return `<span class="delay-badge delay-late">+${d} min</span>`;
+  }
+
+  function renderLeg(leg) {
+    if (leg.walking) {
+      return `
+        <div class="leg">
+          <div class="leg-line">
+            <div class="leg-dot"></div>
+            <div class="leg-track" style="background:repeating-linear-gradient(to bottom,var(--border),var(--border) 5px,transparent 5px,transparent 10px)"></div>
+          </div>
+          <div class="leg-info">
+            <div class="walk-leg">🚶 ${leg.distance ? Math.round(leg.distance)+'m laufen' : 'Fußweg'} (${Math.ceil((new Date(leg.arrival)-new Date(leg.departure))/60000)} min)</div>
+          </div>
+        </div>`;
+    }
+
+    const line = leg.line || {};
+    const color = productColor(line.name || line.fahrtNr || '');
+    const dep = formatTime(leg.departure || leg.plannedDeparture);
+    const arr = formatTime(leg.arrival || leg.plannedArrival);
+    const direction = leg.direction || '';
+
+    return `
+      <div class="leg">
+        <div class="leg-line">
+          <div class="leg-dot start"></div>
+          <div class="leg-track" style="background:${color}"></div>
+        </div>
+        <div class="leg-info">
+          <div class="leg-time">${dep}</div>
+          <div class="leg-station">${leg.origin?.name || '?'}</div>
+          ${leg.origin?.platform ? `<div class="leg-time" style="font-size:11px">Gleis ${leg.origin.platform}</div>` : ''}
+          <div class="leg-transport">
+            <span class="line-pill" style="background:${color}">${line.name || '?'}</span>
+            <span class="direction">➜ ${direction}</span>
+          </div>
+          <div class="leg-time">${arr}</div>
+          <div class="leg-station">${leg.destination?.name || '?'}</div>
+          ${leg.destination?.platform ? `<div class="leg-time" style="font-size:11px">Gleis ${leg.destination.platform}</div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function renderJourney(j, idx) {
+    const legs = j.legs || [];
+    const firstLeg = legs.find(l => !l.walking);
+    const lastLeg = [...legs].reverse().find(l => !l.walking);
+    if (!firstLeg || !lastLeg) return '';
+
+    const depTime = firstLeg.departure || firstLeg.plannedDeparture;
+    const arrTime = lastLeg.arrival || lastLeg.plannedArrival;
+    const changes = legs.filter(l => !l.walking).length - 1;
+    const dur = formatDuration(depTime, arrTime);
+
+    const pills = legs
+      .filter(l => !l.walking && l.line)
+      .map(l => `<span class="line-pill" style="background:${productColor(l.line?.name || '')}">${l.line.name}</span>`)
+      .join('');
+
+    return `
+      <div class="journey-card" onclick="toggleDetail(${idx})">
+        <div class="journey-summary">
+          <div class="journey-times">
+            <div class="time">${formatTime(depTime)}</div>
+            <div class="station">${firstLeg.origin?.name || ''}</div>
+          </div>
+          <div class="journey-duration">
+            <div class="dur">${dur}</div>
+            <div class="changes">${changes === 0 ? 'Direkt' : changes + ' Umstieg' + (changes > 1 ? 'e' : '')}</div>
+            <div class="line-pills">${pills}</div>
+          </div>
+          <div class="journey-times" style="text-align:right">
+            <div class="time">${formatTime(arrTime)}</div>
+            <div class="station">${lastLeg.destination?.name || ''}</div>
+          </div>
+        </div>
+        <div class="journey-detail" id="detail-${idx}">
+          ${legs.map(renderLeg).join('')}
+          <div style="padding:8px 0 4px;display:flex;gap:8px;align-items:center">
+            ${delayBadge(firstLeg)}
+            <span style="font-size:12px;color:var(--muted)">Echtzeit-Status</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function toggleDetail(idx) {
+    const el = document.getElementById(`detail-${idx}`);
+    el.classList.toggle('open');
+  }
+
+  async function searchJourneys() {
+    if (!fromStation || !toStation) {
+      alert('Bitte Start- und Zielbahnhof auswählen.');
+      return;
+    }
+
+    const btn = document.getElementById('search-btn');
+    btn.disabled = true;
+    btn.textContent = 'Suche läuft…';
+    document.getElementById('results').innerHTML = '<div class="spinner"></div>';
+
+    const date = document.getElementById('travel-date').value;
+    const time = document.getElementById('travel-time').value;
+    const depArr = document.getElementById('dep-arr').value;
+
+    const when = encodeURIComponent(new Date(`${date}T${time}`).toISOString());
+    const url = `${API}/journeys?from=${fromStation.id}&to=${toStation.id}&${depArr}=${when}&results=6&stopovers=true&remarks=true`;
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Fehler ${res.status}`);
+      const data = await res.json();
+      const journeys = data.journeys || [];
+
+      if (journeys.length === 0) {
+        document.getElementById('results').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🔍</div>
+            <div>Keine Verbindungen gefunden</div>
+          </div>`;
+      } else {
+        document.getElementById('results').innerHTML =
+          `<div class="results-header">${journeys.length} Verbindungen gefunden — Tippen für Details</div>` +
+          journeys.map((j, i) => renderJourney(j, i)).join('');
+      }
+    } catch(e) {
+      document.getElementById('results').innerHTML = `
+        <div class="error-msg">Fehler beim Laden: ${e.message}. Bitte Internetverbindung prüfen.</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Verbindungen suchen';
+    }
+  }
+</script>
+</body>
+</html>
