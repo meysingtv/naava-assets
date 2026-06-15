@@ -358,9 +358,13 @@
 </nav>
 
 <script>
+// Primär: offizielle DB HAFAS API (beste Daten, Echtzeit)
+// Fallback: Transitous (open-source, weniger vollständig)
+const DB_API  = 'https://v6.db.transport.rest';
 const GEOCODE = 'https://api.transitous.org/api/v1/geocode';
 const PLAN    = 'https://api.transitous.org/api/v3/plan';
 const STOPTIMES = 'https://api.transitous.org/api/v1/stoptimes';
+let useDB = true; // wird auf false gesetzt falls DB-API nicht erreichbar
 
 let from = null, to = null, depStation = null;
 let sugData = { from:[], to:[], dep:[] };
@@ -418,18 +422,35 @@ async function fetchSug(q, field){
   const box=document.getElementById(`${field}-sug`);
   box.innerHTML='<div class="sug-loading">Suche…</div>';
   box.style.display='block';
+
+  // Zuerst DB HAFAS versuchen (offizielle, vollständige Daten)
+  if(useDB){
+    try{
+      const r=await fetch(`${DB_API}/locations?query=${encodeURIComponent(q)}&results=10&stops=true&addresses=false&poi=false`,{signal:AbortSignal.timeout(5000)});
+      if(r.ok){
+        const data=await r.json();
+        sugData[field]=(data||[]).map(s=>({
+          id:s.id, name:s.name, lat:s.location?.latitude, lon:s.location?.longitude,
+          modes:Object.keys(s.products||{}).filter(k=>s.products[k]),
+          _db:true
+        }));
+        renderSug(field);
+        return;
+      }
+    }catch(e){ useDB=false; } // DB nicht erreichbar → Fallback
+  }
+
+  // Fallback: Transitous
   try{
     const r=await fetch(`${GEOCODE}?text=${encodeURIComponent(q)}&language=de`);
     if(!r.ok) throw new Error(r.status);
     const data=await r.json();
-    const RAIL_MODES=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','REGIONAL_FAST_RAIL','REGIONAL_RAIL','RAIL','SUBURBAN'];
+    const RAIL=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','REGIONAL_FAST_RAIL','REGIONAL_RAIL','RAIL','SUBURBAN'];
     const stops=(data||[]).filter(s=>s.type==='STOP');
-    // Sortierung: Bahnhöfe mit echten Zugverbindungen zuerst, dann nach Wichtigkeit
     stops.sort((a,b)=>{
-      const aRail=(a.modes||[]).some(m=>RAIL_MODES.includes(m));
-      const bRail=(b.modes||[]).some(m=>RAIL_MODES.includes(m));
-      if(aRail&&!bRail) return -1;
-      if(!aRail&&bRail) return 1;
+      const aR=(a.modes||[]).some(m=>RAIL.includes(m));
+      const bR=(b.modes||[]).some(m=>RAIL.includes(m));
+      if(aR&&!bR) return -1; if(!aR&&bR) return 1;
       return (b.importance||0)-(a.importance||0);
     });
     sugData[field]=stops.slice(0,10);
@@ -515,6 +536,69 @@ function renderLeg(leg,isLast){
     <div class="leg-body"><div class="leg-time-row"><span class="leg-t">${fmt(arrR)}</span>${leg.realTime?delaySpan(arrS,arrR):''}</div>
     <div class="leg-stop">${leg.to?.name||'?'}</div>${dT?`<span class="leg-platform">Gleis ${dT}</span>`:''}</div></div>`:''}`;
 }
+/* ─── DB HAFAS Format renderer ─── */
+function dbLineColor(line){
+  if(!line) return '#555';
+  const n=(line.name||line.fahrtNr||'').toUpperCase();
+  if(/^ICE/.test(n)) return '#e2001a';
+  if(/^IC|^EC/.test(n)) return '#c4000f';
+  if(/^RE|^RB/.test(n)) return '#0079c2';
+  if(/^S\d/.test(n)) return '#007e3c';
+  if(/^U\d/.test(n)) return '#1c4b9b';
+  if(/^STR|^T\d/.test(n)) return '#d4145a';
+  if(/BUS|NB/.test(n)) return '#8b5cf6';
+  return '#555';
+}
+function renderJourneyDB(j,idx){
+  const legs=(j.legs||[]).filter(l=>l.line||l.walking);
+  const transit=legs.filter(l=>!l.walking);
+  if(!transit.length) return '';
+  const f=transit[0], la=transit[transit.length-1];
+  const depR=f.departure||f.plannedDeparture;
+  const depS=f.plannedDeparture;
+  const arrR=la.arrival||la.plannedArrival;
+  const arrS=la.plannedArrival;
+  const changes=(j.legs||[]).filter(l=>!l.walking).length-1;
+  const dDep=delayMin(depS,depR), dArr=delayMin(arrS,arrR);
+  const pills=transit.map(l=>`<span class="pill" style="background:${dbLineColor(l.line)}">${l.line?.name||'?'}</span>`).join('');
+  const detailLegs=legs.map((leg,i)=>{
+    if(leg.walking){
+      const mins=Math.ceil((new Date(leg.arrival)-new Date(leg.departure))/60000);
+      return `<div class="leg"><div class="leg-timeline"><div class="leg-dot t"></div>
+        <div class="leg-track" style="background:repeating-linear-gradient(to bottom,var(--muted2) 0,var(--muted2) 4px,transparent 4px,transparent 8px)"></div></div>
+        <div class="leg-body"><div class="walk-leg">🚶 Fußweg · ${mins||1} min</div></div></div>`;
+    }
+    const isLast=i===legs.length-1;
+    const col=dbLineColor(leg.line);
+    const dR=leg.departure||leg.plannedDeparture, dS=leg.plannedDeparture;
+    const aR=leg.arrival||leg.plannedArrival, aS=leg.plannedArrival;
+    const oP=leg.departurePlatform||leg.plannedDeparturePlatform||'';
+    const dP=leg.arrivalPlatform||leg.plannedArrivalPlatform||'';
+    const dd=delayMin(dS,dR), da=delayMin(aS,aR);
+    return `<div class="leg"><div class="leg-timeline"><div class="leg-dot s"></div>
+      <div class="leg-track" style="background:${col}"></div></div>
+      <div class="leg-body">
+        <div class="leg-time-row"><span class="leg-t">${fmt(dR)}</span>${dd>0?`<span class="leg-delay late">+${dd} min</span>`:'<span class="leg-delay ok">pünktlich</span>'}</div>
+        <div class="leg-stop">${leg.origin?.name||'?'}</div>
+        ${oP?`<span class="leg-platform">Gleis ${oP}</span>`:''}
+        <div class="leg-transport"><span class="pill" style="background:${col}">${leg.line?.name||'?'}</span><span class="leg-dir">Richtung ${leg.direction||leg.destination?.name||''}</span></div>
+      </div></div>
+      ${isLast?`<div class="leg"><div class="leg-timeline"><div class="leg-dot e"></div></div>
+      <div class="leg-body">
+        <div class="leg-time-row"><span class="leg-t">${fmt(aR)}</span>${da>0?`<span class="leg-delay late">+${da} min</span>`:'<span class="leg-delay ok">pünktlich</span>'}</div>
+        <div class="leg-stop">${leg.destination?.name||'?'}</div>${dP?`<span class="leg-platform">Gleis ${dP}</span>`:''}</div></div>`:''}`
+  }).join('');
+  return `<div class="jcard" onclick="toggleDetail(${idx})">
+    <div class="jsummary">
+      <div class="jtime-block"><div class="jtime">${fmt(depR)}</div><div class="jdelay ${dDep<=0?'ok':'late'}">${dDep<=0?'pünktlich':'+'+dDep+' min'}</div><div class="jstation">${from?.name||f.origin?.name||''}</div></div>
+      <div class="jmid"><div class="jdur">${durStr((new Date(arrR)-new Date(depR))/1000)}</div><div class="jline"></div><div class="jchanges">${changes<=0?'Direkt':changes+' Umst.'}</div><div class="jpills">${pills}</div></div>
+      <div class="jtime-block right"><div class="jtime">${fmt(arrR)}</div><div class="jdelay ${dArr<=0?'ok':'late'}">${dArr<=0?'pünktlich':'+'+dArr+' min'}</div><div class="jstation right">${to?.name||la.destination?.name||''}</div></div>
+    </div>
+    <div class="jexpand">Details <span class="chevron" id="chev-${idx}">▼</span></div>
+    <div class="jdetail" id="detail-${idx}">${detailLegs}</div>
+  </div>`;
+}
+
 function renderJourney(it,idx){
   const legs=it.legs||[];
   const transit=legs.filter(l=>(l.mode||'').toUpperCase()!=='WALK');
@@ -545,19 +629,36 @@ async function search(){
   const btn=document.getElementById('go-btn');
   btn.disabled=true; btn.innerHTML='<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Suche…';
   document.getElementById('results').innerHTML='<div class="spinner-wrap"><div class="spinner"></div></div>';
-  const date=document.getElementById('tdate').value,time=document.getElementById('ttime').value;
+  const date=document.getElementById('tdate').value, time=document.getElementById('ttime').value;
   const arriveBy=document.getElementById('dep-arr').value==='arr';
   const when=new Date(`${date}T${time}:00`).toISOString();
-  const params=new URLSearchParams({fromPlace:`${from.lat},${from.lon}`,toPlace:`${to.lat},${to.lon}`,time:when,arriveBy:String(arriveBy),numItineraries:'7'});
+
+  // ── Versuch 1: DB HAFAS API (offizielle Daten, Echtzeit-Verspätungen) ──
+  if(useDB && from._db && to._db){
+    try{
+      const params=new URLSearchParams({from:from.id,to:to.id,results:'8',stopovers:'false',remarks:'false',language:'de'});
+      params.set(arriveBy?'arrival':'departure', when);
+      const r=await fetch(`${DB_API}/journeys?${params}`,{signal:AbortSignal.timeout(8000)});
+      if(r.ok){
+        const data=await r.json();
+        const cards=(data.journeys||[]).map((j,i)=>renderJourneyDB(j,i)).filter(Boolean);
+        document.getElementById('results').innerHTML = cards.length
+          ? `<div class="notice">✅ ${cards.length} Verbindungen (DB Echtzeit) — antippen für Details</div>`+cards.join('')
+          : `<div class="empty"><div class="eicon">🔎</div><p>Keine Verbindungen gefunden.</p></div>`;
+        btn.disabled=false; btn.innerHTML='<span>🔍</span> Verbindungen suchen';
+        return;
+      }
+    }catch(e){ useDB=false; }
+  }
+
+  // ── Fallback: Transitous ──
   try{
+    const params=new URLSearchParams({fromPlace:`${from.lat},${from.lon}`,toPlace:`${to.lat},${to.lon}`,time:when,arriveBy:String(arriveBy),numItineraries:'8'});
     const r=await fetch(`${PLAN}?${params}`);
     if(!r.ok) throw new Error(`Server ${r.status}`);
     const data=await r.json();
-    // ICE/IC-Verbindungen herausfiltern — nur Nah- und Regionalverkehr
-    const LONGDIST=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','COACH'];
-    const filtered=(data.itineraries||[]).filter(it=>
-      !it.legs.some(l=>LONGDIST.includes(l.mode))
-    );
+    const SKIP=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','COACH'];
+    const filtered=(data.itineraries||[]).filter(it=>!it.legs.some(l=>SKIP.includes(l.mode)));
     const pool=filtered.length>0?filtered:(data.itineraries||[]);
     const cards=pool.map((it,i)=>renderJourney(it,i)).filter(Boolean);
     document.getElementById('results').innerHTML = cards.length
