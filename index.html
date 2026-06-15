@@ -422,7 +422,17 @@ async function fetchSug(q, field){
     const r=await fetch(`${GEOCODE}?text=${encodeURIComponent(q)}&language=de`);
     if(!r.ok) throw new Error(r.status);
     const data=await r.json();
-    sugData[field]=(data||[]).filter(s=>s.type==='STOP').slice(0,10);
+    const RAIL_MODES=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','REGIONAL_FAST_RAIL','REGIONAL_RAIL','RAIL','SUBURBAN'];
+    const stops=(data||[]).filter(s=>s.type==='STOP');
+    // Sortierung: Bahnhöfe mit echten Zugverbindungen zuerst, dann nach Wichtigkeit
+    stops.sort((a,b)=>{
+      const aRail=(a.modes||[]).some(m=>RAIL_MODES.includes(m));
+      const bRail=(b.modes||[]).some(m=>RAIL_MODES.includes(m));
+      if(aRail&&!bRail) return -1;
+      if(!aRail&&bRail) return 1;
+      return (b.importance||0)-(a.importance||0);
+    });
+    sugData[field]=stops.slice(0,10);
     renderSug(field);
   }catch(e){
     box.innerHTML='<div class="sug-loading">Suche fehlgeschlagen</div>';
@@ -517,9 +527,9 @@ function renderJourney(it,idx){
   const pills=transit.map(x=>{const mi=modeInfo(x.mode);return `<span class="pill" style="background:${mi.color}">${x.routeShortName||x.displayName||mi.icon}</span>`}).join('');
   return `<div class="jcard" onclick="toggleDetail(${idx})">
     <div class="jsummary">
-      <div class="jtime-block"><div class="jtime">${fmt(depR)}</div><div class="jdelay ${dDep<=0?'ok':'late'}">${dDep<=0?'pünktlich':'+'+dDep+' min'}</div><div class="jstation">${f.from?.name||''}</div></div>
+      <div class="jtime-block"><div class="jtime">${fmt(depR)}</div><div class="jdelay ${dDep<=0?'ok':'late'}">${dDep<=0?'pünktlich':'+'+dDep+' min'}</div><div class="jstation">${from?.name||f.from?.name||''}</div></div>
       <div class="jmid"><div class="jdur">${durStr(it.duration)}</div><div class="jline"></div><div class="jchanges">${changes===0?'Direkt':changes+' Umst.'}</div><div class="jpills">${pills}</div></div>
-      <div class="jtime-block right"><div class="jtime">${fmt(arrR)}</div><div class="jdelay ${dArr<=0?'ok':'late'}">${dArr<=0?'pünktlich':'+'+dArr+' min'}</div><div class="jstation right">${l.to?.name||''}</div></div>
+      <div class="jtime-block right"><div class="jtime">${fmt(arrR)}</div><div class="jdelay ${dArr<=0?'ok':'late'}">${dArr<=0?'pünktlich':'+'+dArr+' min'}</div><div class="jstation right">${to?.name||l.to?.name||''}</div></div>
     </div>
     <div class="jexpand">Details <span class="chevron" id="chev-${idx}">▼</span></div>
     <div class="jdetail" id="detail-${idx}">${legs.map((lg,i)=>renderLeg(lg,i===legs.length-1)).join('')}</div>
@@ -543,7 +553,13 @@ async function search(){
     const r=await fetch(`${PLAN}?${params}`);
     if(!r.ok) throw new Error(`Server ${r.status}`);
     const data=await r.json();
-    const cards=(data.itineraries||[]).map((it,i)=>renderJourney(it,i)).filter(Boolean);
+    // ICE/IC-Verbindungen herausfiltern — nur Nah- und Regionalverkehr
+    const LONGDIST=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','COACH'];
+    const filtered=(data.itineraries||[]).filter(it=>
+      !it.legs.some(l=>LONGDIST.includes(l.mode))
+    );
+    const pool=filtered.length>0?filtered:(data.itineraries||[]);
+    const cards=pool.map((it,i)=>renderJourney(it,i)).filter(Boolean);
     document.getElementById('results').innerHTML = cards.length
       ? `<div class="notice">✅ ${cards.length} Verbindungen — antippen für Details</div>`+cards.join('')
       : `<div class="empty"><div class="eicon">🔎</div><p>Keine Verbindungen gefunden.<br>Anderen Zeitpunkt versuchen.</p></div>`;
