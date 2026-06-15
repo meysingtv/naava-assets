@@ -4,430 +4,527 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="theme-color" content="#F2F2F7"/>
 <title>Fahrplan</title>
 <style>
+/* ============================================
+   iOS Human Interface Guidelines — exakt
+   ============================================ */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+/* iOS System Colors */
 :root{
-  --ios-bg:#F2F2F7;
-  --ios-card:#FFFFFF;
-  --ios-card2:#F9F9F9;
-  --ios-sep:rgba(60,60,67,0.12);
-  --ios-label:#000000;
-  --ios-label2:rgba(60,60,67,0.6);
-  --ios-label3:rgba(60,60,67,0.3);
-  --ios-blue:#007AFF;
-  --ios-red:#FF3B30;
-  --ios-green:#34C759;
-  --ios-orange:#FF9500;
-  --ios-fill:rgba(120,120,128,0.12);
-  --ios-fill2:rgba(120,120,128,0.08);
-  --brand:#EC0016;
-  --brand-d:#c4000f;
-  --nav-h:83px;
-  --safe-top:env(safe-area-inset-top,44px);
-  --safe-bot:env(safe-area-inset-bottom,34px);
-}
-html,body{height:100%;background:var(--ios-bg);overscroll-behavior:none}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
-  color:var(--ios-label);
-  -webkit-font-smoothing:antialiased;
-  min-height:100dvh;
-}
-
-/* ══ NAVIGATION BAR ══ */
-.navbar{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  background:rgba(242,242,247,0.85);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:0.5px solid var(--ios-sep);
-}
-.navbar-inner{
-  padding:calc(var(--safe-top) + 8px) 20px 10px;
-  display:flex;align-items:flex-end;justify-content:space-between;
-}
-.navbar-title{font-size:34px;font-weight:700;letter-spacing:-0.5px;line-height:1}
-.navbar-badge{
-  width:34px;height:34px;border-radius:10px;
-  background:var(--brand);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-  box-shadow:0 4px 12px rgba(236,0,22,.3);
-  margin-bottom:2px;
+  --bg:          #F2F2F7;
+  --bg2:         #FFFFFF;
+  --grouped-bg:  #F2F2F7;
+  --cell-bg:     #FFFFFF;
+  --label:       #000000;
+  --label2:      rgba(60,60,67,.6);
+  --label3:      rgba(60,60,67,.3);
+  --label4:      rgba(60,60,67,.18);
+  --sep:         rgba(60,60,67,.29);
+  --sep-light:   rgba(60,60,67,.12);
+  --fill:        rgba(120,120,128,.12);
+  --fill2:       rgba(120,120,128,.16);
+  --blue:        #007AFF;
+  --red:         #FF3B30;
+  --green:       #34C759;
+  --orange:      #FF9500;
+  --gray:        #8E8E93;
+  --gray2:       #AEAEB2;
+  --gray3:       #C7C7CC;
+  --gray4:       #D1D1D6;
+  --gray5:       #E5E5EA;
+  --gray6:       #F2F2F7;
+  --brand:       #EC0016;
+  --safe-top:    env(safe-area-inset-top, 47px);
+  --safe-bot:    env(safe-area-inset-bottom, 34px);
 }
 
-/* ══ TAB BAR ══ */
-.tabbar{
-  position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:rgba(242,242,247,0.92);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-top:0.5px solid var(--ios-sep);
-  display:flex;
-  padding-bottom:var(--safe-bot);
-  height:calc(49px + var(--safe-bot));
-}
-.tab{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:3px;border:none;background:none;
-  cursor:pointer;color:var(--ios-label3);font-family:inherit;
-  padding:8px 0 0;
-}
-.tab-icon{font-size:22px;line-height:1;transition:transform .15s}
-.tab-label{font-size:10px;font-weight:500;letter-spacing:0.2px}
-.tab.active{color:var(--brand)}
-.tab.active .tab-icon{transform:scale(1.08)}
-
-/* ══ PAGES ══ */
-.page{
-  display:none;
-  padding-top:calc(var(--safe-top) + 84px);
-  padding-bottom:calc(49px + var(--safe-bot) + 12px);
-  min-height:100dvh;
-}
-.page.active{display:block}
-
-/* ══ SCROLL CONTAINER ══ */
-.scroll{padding:0 16px}
-
-/* ══ SECTION HEADER ══ */
-.section-hd{
-  font-size:13px;font-weight:600;
-  color:var(--ios-label2);
-  text-transform:uppercase;letter-spacing:0.4px;
-  padding:0 4px;margin:16px 0 6px;
+html, body {
+  height: 100%;
+  background: var(--bg);
+  overscroll-behavior: none;
 }
 
-/* ══ IOS GROUPED CARD ══ */
-.ios-group{
-  background:var(--ios-card);
-  border-radius:16px;
-  overflow:hidden;
-  margin-bottom:10px;
-}
-.ios-row{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 16px;
-  min-height:52px;
-  position:relative;
-}
-.ios-row:not(:last-child)::after{
-  content:'';
-  position:absolute;bottom:0;left:56px;right:0;
-  height:0.5px;background:var(--ios-sep);
-}
-.ios-icon{
-  width:32px;height:32px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;flex-shrink:0;
-}
-.ios-icon.green{background:#34C759}
-.ios-icon.red{background:#FF3B30}
-.ios-icon.blue{background:#007AFF}
-.ios-icon.orange{background:#FF9500}
-.ios-row-body{flex:1;min-width:0}
-.ios-row-label{font-size:17px;font-weight:400;color:var(--ios-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ios-row-sub{font-size:13px;color:var(--ios-label2);margin-top:1px}
-
-/* ══ SEARCH INPUTS ══ */
-.search-box{
-  background:var(--ios-fill);
-  border-radius:12px;
-  padding:11px 14px 11px 40px;
-  font-size:17px;font-family:inherit;
-  color:var(--ios-label);
-  border:none;outline:none;width:100%;
-  transition:background .15s;
-}
-.search-box:focus{background:rgba(120,120,128,0.18)}
-.search-box::placeholder{color:var(--ios-label3);font-size:17px}
-.field-wrap{position:relative;margin-bottom:8px}
-.field-icon-pos{
-  position:absolute;left:12px;top:50%;transform:translateY(-50%);
-  font-size:16px;pointer-events:none;color:var(--ios-label2);
-}
-.field-lbl{
-  font-size:11px;font-weight:600;letter-spacing:0.5px;
-  text-transform:uppercase;color:var(--ios-label2);
-  margin-bottom:5px;
-}
-.field-dot{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  margin-right:5px;vertical-align:middle;
-}
-.field-dot.g{background:var(--ios-green)}
-.field-dot.r{background:var(--ios-red)}
-
-/* ══ SWAP BUTTON ══ */
-.swap-row{display:flex;align-items:center;gap:10px;margin:4px 0}
-.swap-hr{flex:1;height:0.5px;background:var(--ios-sep)}
-.swap-btn{
-  width:34px;height:34px;border-radius:50%;
-  background:var(--ios-fill);border:none;
-  color:var(--ios-label2);font-size:17px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;
-}
-.swap-btn:active{transform:rotate(180deg) scale(0.92);background:var(--brand);color:#fff}
-
-/* ══ TIME SELECTOR ══ */
-.time-row{display:flex;gap:8px;margin-top:10px}
-.time-pill{
-  flex:1;background:var(--ios-fill);border-radius:10px;
-  border:none;padding:10px 8px;
-  font-size:14px;font-weight:600;font-family:inherit;
-  color:var(--ios-label);text-align:center;
-  appearance:none;outline:none;
+body {
+  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  color: var(--label);
+  -webkit-font-smoothing: antialiased;
+  font-size: 17px;
+  line-height: 1.29;
 }
 
-/* ══ PRIMARY BUTTON ══ */
-.cta{
-  width:100%;background:var(--brand);color:#fff;
-  border:none;border-radius:14px;padding:16px;
-  font-size:17px;font-weight:600;font-family:inherit;
-  cursor:pointer;margin-top:12px;letter-spacing:-0.2px;
-  box-shadow:0 4px 16px rgba(236,0,22,.28);
-  transition:transform .1s,opacity .15s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
+/* ── Nav Bar (Large Title) ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(242,242,247,.94);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: .5px solid var(--sep);
 }
-.cta:active{transform:scale(.97);opacity:.9}
-.cta:disabled{opacity:.4;transform:none;box-shadow:none}
-
-/* ══ SUGGESTIONS ══ */
-.sug-wrap{
-  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:300;
-  background:var(--ios-card);border-radius:14px;overflow:hidden;
-  box-shadow:0 8px 40px rgba(0,0,0,.14),0 0 0 0.5px rgba(0,0,0,.06);
-  max-height:300px;overflow-y:auto;
+.nav-inner {
+  padding-top: var(--safe-top);
+  padding-bottom: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
-.sug-row{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;border-bottom:0.5px solid var(--ios-sep);cursor:pointer;
-}
-.sug-row:last-child{border-bottom:none}
-.sug-row:active{background:var(--ios-fill)}
-.sug-icon{
-  width:32px;height:32px;border-radius:8px;background:var(--ios-fill);
-  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;
-}
-.sug-name{font-size:16px;font-weight:500}
-.sug-sub{font-size:12px;color:var(--ios-label2);margin-top:1px}
-.sug-info{padding:14px;text-align:center;font-size:14px;color:var(--ios-label2)}
-
-/* ══ RESULTS NOTICE ══ */
-.result-notice{
-  display:flex;align-items:center;gap:8px;
-  font-size:13px;color:var(--ios-label2);font-weight:500;
-  padding:6px 4px 10px;
-}
-.live-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--ios-green);
-  box-shadow:0 0 0 0 rgba(52,199,89,.6);
-  animation:pulse 2s ease infinite;flex-shrink:0;
-}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,199,89,.5)}70%{box-shadow:0 0 0 6px rgba(52,199,89,0)}100%{box-shadow:0 0 0 0 rgba(52,199,89,0)}}
-
-/* ══ JOURNEY CARD ══ */
-.jcard{
-  background:var(--ios-card);border-radius:16px;
-  margin-bottom:10px;overflow:hidden;
-  box-shadow:0 1px 4px rgba(0,0,0,.06),0 0 0 0.5px rgba(0,0,0,.04);
-  cursor:pointer;
-}
-.jcard:active{transform:scale(.99);opacity:.95}
-
-.jhead{
-  padding:14px 16px 12px;
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  align-items:start;
+.nav-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: .37px;
+  line-height: 41px;
 }
 
-.jtime-col{}
-.jtime-col.right{text-align:right}
+/* ── Tab Bar ── */
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(249,249,249,.94);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-top: .5px solid var(--sep);
+  display: flex;
+  padding-bottom: var(--safe-bot);
+}
+.tabitem {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 6px 0 0;
+  height: calc(49px + 0px);
+  border: none; background: none; cursor: pointer;
+  font-family: inherit;
+  color: var(--gray);
+  gap: 2px;
+  transition: color .15s;
+}
+.tabitem.on { color: var(--brand); }
+.tab-ico { font-size: 24px; line-height: 1; }
+.tab-lbl { font-size: 10px; font-weight: 500; letter-spacing: .12px; }
 
-.jtime-big{
-  font-size:28px;font-weight:700;letter-spacing:-1px;line-height:1;
-  font-variant-numeric:tabular-nums;
+/* ── Page Containers ── */
+.page {
+  display: none;
+  min-height: 100dvh;
 }
-.jdelay-tag{
-  display:inline-block;font-size:11px;font-weight:700;
-  padding:2px 7px;border-radius:20px;margin-top:4px;
-}
-.jdelay-tag.ok{background:rgba(52,199,89,.12);color:var(--ios-green)}
-.jdelay-tag.late{background:rgba(255,59,48,.1);color:var(--ios-red)}
-.jstation-name{font-size:11px;color:var(--ios-label2);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.page.on { display: block; }
 
-.jmid-col{
-  display:flex;flex-direction:column;align-items:center;
-  padding:0 4px;
-}
-.jdur-text{font-size:13px;font-weight:600;color:var(--ios-label2)}
-.jroute-bar{
-  position:relative;height:3px;background:var(--ios-sep);
-  width:100%;border-radius:2px;margin:6px 0;
-}
-.jroute-bar::before,.jroute-bar::after{
-  content:'';position:absolute;top:50%;transform:translateY(-50%);
-  width:7px;height:7px;border-radius:50%;
-}
-.jroute-bar::before{left:-2px;background:var(--ios-green)}
-.jroute-bar::after{right:-2px;background:var(--ios-red)}
-.jchanges-text{font-size:11px;color:var(--ios-label2)}
-
-.jpills-row{
-  display:flex;gap:4px;flex-wrap:wrap;justify-content:center;
-  padding:0 14px 12px;
-}
-.lpill{
-  padding:3px 9px;border-radius:7px;
-  font-size:12px;font-weight:800;color:#fff;letter-spacing:0.2px;
+.scroll-area {
+  padding-top: calc(var(--safe-top) + 52px + 44px);
+  padding-bottom: calc(var(--safe-bot) + 49px + 16px);
 }
 
-/* ══ DETAIL CHEVRON ══ */
-.jchev-row{
-  display:flex;align-items:center;justify-content:center;
-  gap:5px;padding:8px 0 10px;
-  border-top:0.5px solid var(--ios-sep);
-  font-size:12px;color:var(--ios-label2);font-weight:500;
+/* ── Inset Grouped Section ── */
+.section {
+  margin: 0 16px 32px;
 }
-.chevron{display:inline-block;font-size:11px;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
-.chevron.open{transform:rotate(180deg)}
-
-/* ══ DETAIL VIEW ══ */
-.jdetail{display:none;border-top:0.5px solid var(--ios-sep);padding:14px 16px 4px;background:var(--ios-card2)}
-.jdetail.open{display:block}
-
-.leg{display:flex;gap:10px;padding-bottom:4px}
-.leg-tl{display:flex;flex-direction:column;align-items:center;width:28px;flex-shrink:0;padding-top:4px}
-.leg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;border:2.5px solid var(--ios-card2);z-index:1}
-.leg-dot.s{background:var(--ios-green)}
-.leg-dot.e{background:var(--ios-red)}
-.leg-dot.m{background:var(--ios-label2)}
-.leg-track{width:3px;border-radius:2px;flex:1;min-height:24px;margin:2px 0}
-.leg-body{flex:1;padding-bottom:16px}
-.leg-t{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
-.leg-d{font-size:11px;font-weight:700;margin-left:6px}
-.leg-d.ok{color:var(--ios-green)}
-.leg-d.late{color:var(--ios-red)}
-.leg-name{font-size:14px;font-weight:600;margin:2px 0}
-.leg-sub{font-size:12px;color:var(--ios-label2)}
-.leg-platform{
-  display:inline-block;font-size:11px;font-weight:700;
-  background:var(--ios-fill);border-radius:6px;
-  padding:2px 8px;margin-top:4px;color:var(--ios-label2);
+.section-title {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--label2);
+  text-transform: uppercase;
+  letter-spacing: -.08px;
+  margin-bottom: 8px;
+  padding-left: 16px;
 }
-.leg-transport{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 0 4px;
+.section-footer {
+  font-size: 13px;
+  color: var(--label2);
+  margin-top: 8px;
+  padding-left: 16px;
 }
-.leg-dir{font-size:13px;color:var(--ios-label2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.walk-row{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 0;font-size:13px;color:var(--ios-label2);
+.cell-group {
+  background: var(--cell-bg);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cell {
+  display: flex; align-items: center;
+  padding: 11px 16px;
+  min-height: 44px;
+  gap: 12px;
+  position: relative;
+  background: var(--cell-bg);
+}
+.cell + .cell::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 16px; right: 0;
+  height: .5px;
+  background: var(--sep-light);
 }
 
-/* ══ DEPARTURE BOARD ══ */
-.dep-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;
+/* ── Text Fields ── */
+.ifield {
+  flex: 1; min-width: 0;
+  font-size: 17px;
+  font-family: inherit;
+  color: var(--label);
+  border: none; outline: none;
+  background: transparent;
 }
-.dep-item:not(:last-child){
-  border-bottom:0.5px solid var(--ios-sep);
+.ifield::placeholder { color: var(--label3); }
+
+.cell-icon {
+  width: 29px; height: 29px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
 }
-.dep-info{flex:1;min-width:0}
-.dep-dest{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dep-via{font-size:12px;color:var(--ios-label2);margin-top:2px}
-.dep-right{text-align:right;flex-shrink:0}
-.dep-time{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.5px}
-.dep-delay{font-size:11px;font-weight:700;margin-top:2px}
-.dep-delay.ok{color:var(--ios-green)}
-.dep-delay.late{color:var(--ios-red)}
-.dep-track{font-size:11px;color:var(--ios-label2);margin-top:1px}
+.ci-green { background: var(--green); }
+.ci-red   { background: var(--brand); }
+.ci-blue  { background: var(--blue); }
+.ci-gray  { background: var(--gray4); }
+.ci-orange{ background: var(--orange); }
 
-/* ══ FAVORITE ══ */
-.fav-item{display:flex;align-items:center;gap:14px;padding:12px 16px}
-.fav-item:not(:last-child){border-bottom:0.5px solid var(--ios-sep)}
-.fav-ico{width:40px;height:40px;border-radius:12px;background:rgba(236,0,22,.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.fav-body{flex:1;min-width:0}
-.fav-name{font-size:16px;font-weight:600}
-.fav-sub{font-size:13px;color:var(--ios-label2);margin-top:2px}
-.fav-del{border:none;background:none;color:var(--ios-label3);font-size:22px;cursor:pointer;padding:6px;flex-shrink:0;line-height:1}
-.fav-del:active{color:var(--ios-red)}
-
-/* ══ STATES ══ */
-.spinner-wrap{display:flex;justify-content:center;padding:60px 0}
-.spinner{width:36px;height:36px;border:3px solid var(--ios-sep);border-top-color:var(--brand);border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.empty-state{text-align:center;padding:56px 20px;color:var(--ios-label2)}
-.empty-state .eico{font-size:56px;margin-bottom:12px;opacity:.8}
-.empty-state .etxt{font-size:15px;line-height:1.5}
-.err-box{background:rgba(255,59,48,.06);border-radius:14px;padding:16px;font-size:14px;color:var(--ios-red);line-height:1.5}
-
-/* ══ SAVE BTN (Abfahrten) ══ */
-.save-btn{
-  background:none;border:none;cursor:pointer;
-  font-size:22px;color:var(--ios-label3);padding:4px;
-  line-height:1;transition:transform .15s;
+/* Swap divider */
+.swap-divider {
+  display: flex; align-items: center; gap: 8px;
+  padding: 2px 16px;
+  position: relative;
 }
-.save-btn:active{transform:scale(1.25)}
-.save-btn.saved{color:var(--ios-orange)}
+.swap-line { flex: 1; height: .5px; background: var(--sep-light); }
+.swap-circle {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--fill);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--label2);
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), background .15s;
+  flex-shrink: 0;
+}
+.swap-circle:active { transform: rotate(180deg); background: var(--gray4); }
+
+/* Time cells */
+.time-seg {
+  display: flex; gap: 0;
+  background: var(--cell-bg);
+  border-radius: 10px; overflow: hidden;
+}
+.time-seg > * {
+  flex: 1; min-width: 0;
+  padding: 11px 12px;
+  font-size: 15px; font-weight: 500;
+  font-family: inherit; color: var(--label);
+  border: none; outline: none;
+  background: transparent; text-align: center;
+  appearance: none;
+}
+.time-seg > * + * { border-left: .5px solid var(--sep-light); }
+
+/* Blue CTA */
+.cta-btn {
+  display: block; width: 100%;
+  padding: 14px;
+  font-size: 17px; font-weight: 600;
+  font-family: inherit; color: #fff;
+  background: var(--brand);
+  border: none; border-radius: 10px;
+  cursor: pointer; letter-spacing: .35px;
+  transition: opacity .12s;
+}
+.cta-btn:active { opacity: .82; }
+.cta-btn:disabled { opacity: .4; }
+
+/* Suggestions */
+.sug-list {
+  position: absolute;
+  top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+  background: var(--cell-bg);
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,.12), 0 0 0 .5px rgba(0,0,0,.08);
+  max-height: 290px; overflow-y: auto;
+}
+.sug-cell {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px;
+  cursor: pointer;
+  position: relative;
+}
+.sug-cell + .sug-cell::before {
+  content: ''; position: absolute;
+  top: 0; left: 16px; right: 0; height: .5px;
+  background: var(--sep-light);
+}
+.sug-cell:active { background: var(--fill); }
+.sug-ico {
+  width: 29px; height: 29px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+  background: var(--fill);
+}
+.sug-name { font-size: 16px; }
+.sug-hint { font-size: 12px; color: var(--label2); margin-top: 1px; }
+.sug-msg { padding: 14px 16px; font-size: 15px; color: var(--label2); text-align: center; }
+
+/* Journey Card */
+.jcard {
+  background: var(--cell-bg);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity .1s;
+}
+.jcard:active { opacity: .7; }
+
+.j-row {
+  display: grid;
+  grid-template-columns: 72px 1fr 72px;
+  gap: 0;
+  padding: 14px 16px 10px;
+  align-items: center;
+}
+.j-time {
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -.5px;
+  font-variant-numeric: tabular-nums;
+}
+.j-delay {
+  font-size: 11px; font-weight: 600;
+  margin-top: 2px;
+}
+.j-delay.ok  { color: var(--green); }
+.j-delay.late { color: var(--red); }
+.j-end { text-align: right; }
+.j-end .j-time { text-align: right; }
+.j-end .j-delay { text-align: right; }
+
+.j-mid {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 0 8px;
+}
+.j-dur {
+  font-size: 12px; color: var(--label2); font-weight: 500;
+}
+.j-bar {
+  width: 100%; height: 2px; background: var(--gray4);
+  border-radius: 2px; position: relative;
+}
+.j-bar::before, .j-bar::after {
+  content: ''; position: absolute; top: 50%;
+  transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.j-bar::before { left: -1px; background: var(--green); }
+.j-bar::after  { right: -1px; background: var(--brand); }
+.j-chg { font-size: 11px; color: var(--label2); }
+
+.j-pills {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  padding: 0 16px 12px;
+}
+.pill {
+  padding: 2px 8px; border-radius: 5px;
+  font-size: 12px; font-weight: 700;
+  color: #fff; letter-spacing: .2px;
+}
+
+.j-sep { height: .5px; background: var(--sep-light); margin: 0 16px; }
+
+.j-chevron {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 0;
+  font-size: 12px; color: var(--label3); font-weight: 500;
+}
+.chev {
+  display: inline-block; font-size: 10px; color: var(--label3);
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.chev.open { transform: rotate(180deg); }
+
+/* Detail expand */
+.j-detail {
+  display: none;
+  background: var(--grouped-bg);
+  padding: 12px 16px;
+  border-top: .5px solid var(--sep-light);
+}
+.j-detail.open { display: block; }
+
+.leg { display: flex; gap: 0; margin-bottom: 0; }
+.leg-tl {
+  display: flex; flex-direction: column;
+  align-items: center; width: 32px; flex-shrink: 0;
+  padding-top: 4px;
+}
+.leg-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--grouped-bg); z-index: 1;
+}
+.leg-dot.s { background: var(--green); }
+.leg-dot.e { background: var(--brand); }
+.leg-dot.w { background: var(--gray3); }
+.leg-line {
+  width: 2px; border-radius: 2px; flex: 1;
+  min-height: 22px; margin: 2px 0;
+}
+.leg-body { flex: 1; padding-bottom: 14px; }
+.leg-time {
+  font-size: 15px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.leg-dly { font-size: 11px; font-weight: 600; margin-left: 6px; }
+.leg-dly.ok   { color: var(--green); }
+.leg-dly.late { color: var(--red); }
+.leg-station { font-size: 15px; font-weight: 600; margin-top: 1px; }
+.leg-plat {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  color: var(--label2); background: var(--gray5);
+  border-radius: 5px; padding: 1px 7px; margin-top: 3px;
+}
+.leg-line-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 0 2px;
+}
+.leg-dir { font-size: 13px; color: var(--label2); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.walk-cell {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 0; font-size: 13px; color: var(--label2);
+}
+
+/* Live indicator */
+.live-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 2px 0 10px; font-size: 13px; color: var(--label2);
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  animation: blink 1.8s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+/* Departure Board */
+.dep-cell {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; min-height: 52px;
+  position: relative;
+}
+.dep-cell + .dep-cell::before {
+  content: ''; position: absolute;
+  top: 0; left: 16px; right: 0;
+  height: .5px; background: var(--sep-light);
+}
+.dep-info { flex: 1; min-width: 0; }
+.dep-dest { font-size: 16px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dep-plat { font-size: 12px; color: var(--label2); margin-top: 2px; }
+.dep-right { flex-shrink: 0; text-align: right; }
+.dep-time { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.3px; }
+.dep-delay { font-size: 11px; font-weight: 700; margin-top: 2px; }
+.dep-delay.ok   { color: var(--green); }
+.dep-delay.late { color: var(--red); }
+
+/* Favorites */
+.fav-cell {
+  display: flex; align-items: center; gap: 14px;
+  padding: 11px 16px; min-height: 52px;
+  position: relative;
+}
+.fav-cell + .fav-cell::before {
+  content: ''; position: absolute;
+  top: 0; left: 60px; right: 0;
+  height: .5px; background: var(--sep-light);
+}
+.fav-ico {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: rgba(236,0,22,.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.fav-text { flex: 1; min-width: 0; }
+.fav-name { font-size: 16px; font-weight: 500; }
+.fav-sub  { font-size: 13px; color: var(--label2); margin-top: 1px; }
+.fav-del  { border: none; background: none; color: var(--gray2); font-size: 22px; cursor: pointer; padding: 4px; }
+.fav-del:active { color: var(--red); }
+
+/* Star save button */
+.star-btn {
+  border: none; background: none; cursor: pointer; padding: 4px;
+  font-size: 20px; color: var(--gray2); transition: transform .15s;
+}
+.star-btn:active { transform: scale(1.3); }
+.star-btn.on { color: var(--orange); }
+
+/* States */
+.loading {
+  display: flex; justify-content: center;
+  padding: 48px 0;
+}
+.spinner {
+  width: 30px; height: 30px;
+  border: 3px solid var(--gray4);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty {
+  padding: 60px 16px; text-align: center; color: var(--label2);
+}
+.empty-ico { font-size: 52px; margin-bottom: 12px; }
+.empty-txt { font-size: 15px; line-height: 1.5; }
+.empty-sub { font-size: 13px; color: var(--label3); margin-top: 6px; }
+
+.err {
+  margin: 0 16px;
+  background: var(--cell-bg); border-radius: 10px;
+  padding: 14px 16px; font-size: 14px; color: var(--red); line-height: 1.5;
+}
 </style>
 </head>
 <body>
 
-<!-- ══ NAVIGATION BAR ══ -->
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="navbar-title" id="nav-title">Verbindungen</div>
-    <div class="navbar-badge">🚆</div>
+<!-- ▸ Nav Bar -->
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-title" id="nav-title">Verbindungen</div>
   </div>
 </div>
 
-<!-- ══ PAGE: SUCHEN ══ -->
-<div class="page active" id="page-search">
-<div class="scroll">
+<!-- ▸▸ PAGE 1: SUCHEN -->
+<div class="page on" id="p-search">
+<div class="scroll-area">
 
-  <div class="ios-group" style="padding:16px;margin-top:0">
-    <!-- VON -->
-    <div class="field-lbl"><span class="field-dot g"></span>Von</div>
-    <div class="field-wrap" style="position:relative">
-      <span class="field-icon-pos">📍</span>
-      <input class="search-box" id="from-input" placeholder="Startbahnhof suchen…" autocomplete="off" autocorrect="off" spellcheck="false"/>
-      <div class="sug-wrap" id="from-sug" style="display:none"></div>
+  <div class="section" style="margin-top:0">
+    <!-- Von / Nach -->
+    <div class="cell-group" style="overflow:visible">
+      <div class="cell" style="position:relative">
+        <div class="cell-icon ci-green">🟢</div>
+        <input class="ifield" id="from-input" placeholder="Abfahrt" autocomplete="off" autocorrect="off" spellcheck="false"/>
+        <div class="sug-list" id="from-sug" style="display:none"></div>
+      </div>
+      <div class="swap-divider" style="height:1px;padding:0;margin:0 0 0 57px">
+        <div class="swap-line"></div>
+        <button class="swap-circle" onclick="swap()">⇅</button>
+        <div class="swap-line" style="flex:2"></div>
+      </div>
+      <div class="cell" style="position:relative">
+        <div class="cell-icon ci-red" style="font-size:12px">📍</div>
+        <input class="ifield" id="to-input" placeholder="Ankunft" autocomplete="off" autocorrect="off" spellcheck="false"/>
+        <div class="sug-list" id="to-sug" style="display:none"></div>
+      </div>
     </div>
+  </div>
 
-    <div class="swap-row">
-      <div class="swap-hr"></div>
-      <button class="swap-btn" onclick="swap()">⇅</button>
-      <div class="swap-hr"></div>
-    </div>
-
-    <!-- NACH -->
-    <div class="field-lbl"><span class="field-dot r"></span>Nach</div>
-    <div class="field-wrap" style="position:relative">
-      <span class="field-icon-pos">🏁</span>
-      <input class="search-box" id="to-input" placeholder="Zielbahnhof suchen…" autocomplete="off" autocorrect="off" spellcheck="false"/>
-      <div class="sug-wrap" id="to-sug" style="display:none"></div>
-    </div>
-
-    <!-- ZEIT -->
-    <div class="time-row">
-      <select class="time-pill" id="dep-arr">
+  <div class="section" style="margin-top:-20px">
+    <div class="time-seg">
+      <select id="dep-arr" style="color:var(--label2)">
         <option value="dep">Abfahrt</option>
         <option value="arr">Ankunft</option>
       </select>
-      <input type="date" class="time-pill" id="tdate"/>
-      <input type="time" class="time-pill" id="ttime"/>
+      <input type="date" id="tdate"/>
+      <input type="time" id="ttime"/>
     </div>
+  </div>
 
-    <button class="cta" id="go-btn" onclick="search()">
-      Verbindungen suchen
-    </button>
+  <div class="section" style="margin-top:-20px">
+    <button class="cta-btn" id="go-btn" onclick="search()">Suchen</button>
   </div>
 
   <div id="results"></div>
@@ -435,551 +532,496 @@ body{
 </div>
 </div>
 
-<!-- ══ PAGE: ABFAHRTEN ══ -->
-<div class="page" id="page-dep">
-<div class="scroll">
+<!-- ▸▸ PAGE 2: ABFAHRTEN -->
+<div class="page" id="p-dep">
+<div class="scroll-area">
 
-  <div class="ios-group" style="padding:14px 16px;margin-top:0">
-    <div class="field-wrap" style="position:relative">
-      <span class="field-icon-pos">🔍</span>
-      <input class="search-box" id="dep-input" placeholder="Bahnhof oder Haltestelle…" autocomplete="off" autocorrect="off" spellcheck="false"/>
-      <div class="sug-wrap" id="dep-sug" style="display:none"></div>
+  <div class="section" style="margin-top:0">
+    <div class="cell-group" style="overflow:visible">
+      <div class="cell" style="position:relative">
+        <div class="cell-icon ci-gray">🔍</div>
+        <input class="ifield" id="dep-input" placeholder="Bahnhof oder Haltestelle" autocomplete="off" autocorrect="off" spellcheck="false"/>
+        <div class="sug-list" id="dep-sug" style="display:none"></div>
+      </div>
     </div>
   </div>
 
   <div id="dep-results">
-    <div class="empty-state">
-      <div class="eico">🕑</div>
-      <div class="etxt">Bahnhof eingeben für<br>die nächsten Abfahrten</div>
+    <div class="empty">
+      <div class="empty-ico">🕑</div>
+      <div class="empty-txt">Bahnhof eingeben</div>
+      <div class="empty-sub">Die nächsten Abfahrten werden angezeigt</div>
     </div>
   </div>
 
 </div>
 </div>
 
-<!-- ══ PAGE: FAVORITEN ══ -->
-<div class="page" id="page-fav">
-<div class="scroll">
-  <div id="fav-content"></div>
+<!-- ▸▸ PAGE 3: FAVORITEN -->
+<div class="page" id="p-fav">
+<div class="scroll-area">
+  <div id="fav-content">
+    <div class="empty">
+      <div class="empty-ico">⭐</div>
+      <div class="empty-txt">Keine Favoriten</div>
+      <div class="empty-sub">Bahnhöfe unter Abfahrten mit ★ merken</div>
+    </div>
+  </div>
 </div>
 </div>
 
-<!-- ══ TAB BAR ══ -->
-<div class="tabbar">
-  <button class="tab active" data-page="search" onclick="goTab('search')">
-    <span class="tab-icon">🔍</span>
-    <span class="tab-label">Suchen</span>
+<!-- ▸ Tab Bar -->
+<nav class="tabbar">
+  <button class="tabitem on" data-p="search" onclick="goTab(this)">
+    <span class="tab-ico">🔍</span>
+    <span class="tab-lbl">Suchen</span>
   </button>
-  <button class="tab" data-page="dep" onclick="goTab('dep')">
-    <span class="tab-icon">🕑</span>
-    <span class="tab-label">Abfahrten</span>
+  <button class="tabitem" data-p="dep" onclick="goTab(this)">
+    <span class="tab-ico">🕑</span>
+    <span class="tab-lbl">Abfahrten</span>
   </button>
-  <button class="tab" data-page="fav" onclick="goTab('fav')">
-    <span class="tab-icon">⭐</span>
-    <span class="tab-label">Favoriten</span>
+  <button class="tabitem" data-p="fav" onclick="goTab(this)">
+    <span class="tab-ico">⭐</span>
+    <span class="tab-lbl">Favoriten</span>
   </button>
-</div>
+</nav>
 
 <script>
 'use strict';
-
 const DB   = 'https://v6.db.transport.rest';
 const GEO  = 'https://api.transitous.org/api/v1/geocode';
 const PLAN = 'https://api.transitous.org/api/v3/plan';
-const STOP = 'https://api.transitous.org/api/v1/stoptimes';
+const DEPAPI = 'https://api.transitous.org/api/v1/stoptimes';
 
-let from=null, to=null, depSt=null;
-let sugCache={from:[],to:[],dep:[]};
-let debounce={};
-let useDB=true;
+let FROM=null, TO=null, DEPST=null;
+let sug={from:[],to:[],dep:[]};
+let tmr={};
+let dbOk=true;
 
-// Set current date/time
-const now=new Date();
-document.getElementById('tdate').value=now.toISOString().slice(0,10);
-document.getElementById('ttime').value=now.toTimeString().slice(0,5);
+// Init date+time
+const N=new Date();
+document.getElementById('tdate').value=N.toISOString().slice(0,10);
+document.getElementById('ttime').value=N.toTimeString().slice(0,5);
 
-/* ── TABS ── */
-const TAB_TITLES={search:'Verbindungen',dep:'Abfahrten',fav:'Favoriten'};
-function goTab(t){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.page===t));
-  document.getElementById(`page-${t}`).classList.add('active');
-  document.getElementById('nav-title').textContent=TAB_TITLES[t];
-  if(t==='fav') renderFavs();
-  window.scrollTo({top:0});
+/* ── Tabs ── */
+const TITLES={search:'Verbindungen',dep:'Abfahrten',fav:'Favoriten'};
+function goTab(btn){
+  const p=btn.dataset.p;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tabitem').forEach(x=>x.classList.remove('on'));
+  document.getElementById(`p-${p}`).classList.add('on');
+  btn.classList.add('on');
+  document.getElementById('nav-title').textContent=TITLES[p];
+  if(p==='fav') renderFavs();
+  window.scrollTo({top:0,behavior:'instant'});
 }
 
-/* ── LINE COLORS ── */
-function lineColor(name){
+/* ── Colors ── */
+function lc(name){
   if(!name) return '#8E8E93';
   const n=name.toUpperCase();
-  if(/^ICE/.test(n)) return '#EC0016';
-  if(/^IC|^EC|^TGV|^RJ/.test(n)) return '#c4000f';
+  if(/ICE/.test(n)) return '#EC0016';
+  if(/^IC|^EC/.test(n)) return '#c4000f';
   if(/^RE|^RB/.test(n)) return '#0066CC';
   if(/^S\d/.test(n)) return '#007E3C';
   if(/^U\d/.test(n)) return '#1C4B9B';
-  if(/^STR|^T\d|^M\d/.test(n)) return '#C0003C';
-  if(/BUS|NB|SEV/.test(n)) return '#7C3AED';
-  if(/^FLX/.test(n)) return '#6DB33F';
+  if(/STR|^T\d|^M\d/.test(n)) return '#C0003C';
+  if(/BUS|NB/.test(n)) return '#7C3AED';
   return '#555';
 }
-function modeColor(mode){
+function mc(mode){
   switch((mode||'').toUpperCase()){
-    case 'HIGHSPEED_RAIL':return '#EC0016';
-    case 'LONG_DISTANCE': return '#c4000f';
-    case 'NIGHT_RAIL':    return '#4C1D95';
+    case 'HIGHSPEED_RAIL': return '#EC0016';
+    case 'LONG_DISTANCE':  return '#c4000f';
     case 'REGIONAL_FAST_RAIL':
     case 'REGIONAL_RAIL':
-    case 'RAIL':          return '#0066CC';
+    case 'RAIL':           return '#0066CC';
     case 'SUBURBAN':
     case 'METRO':
-    case 'SUBWAY':        return '#007E3C';
-    case 'TRAM':          return '#C0003C';
+    case 'SUBWAY':         return '#007E3C';
+    case 'TRAM':           return '#C0003C';
     case 'BUS':
-    case 'COACH':         return '#7C3AED';
-    case 'FERRY':         return '#0891B2';
-    default:              return '#8E8E93';
+    case 'COACH':          return '#7C3AED';
+    case 'FERRY':          return '#0891B2';
+    default:               return '#8E8E93';
   }
 }
-function modeIcon(modes){
-  if(!modes||!modes.length) return '🚉';
-  const p=['HIGHSPEED_RAIL','LONG_DISTANCE','REGIONAL_RAIL','SUBURBAN','SUBWAY','METRO','TRAM','BUS'];
-  for(const m of p){
-    if(modes.includes(m)){
-      if(m==='HIGHSPEED_RAIL'||m==='LONG_DISTANCE') return '🚄';
-      if(m==='REGIONAL_RAIL') return '🚆';
-      if(m==='SUBURBAN') return '🚊';
-      if(m==='SUBWAY'||m==='METRO') return '🚇';
-      if(m==='TRAM') return '🚋';
-      if(m==='BUS') return '🚌';
-    }
-  }
-  return '🚉';
-}
-function dbModeIcon(products){
+function mi(products){
   if(!products) return '🚉';
-  if(products.nationalExpress) return '🚄';
-  if(products.national) return '🚅';
+  if(products.nationalExpress||products.national) return '🚄';
   if(products.regionalExpress||products.regional) return '🚆';
   if(products.suburban) return '🚊';
   if(products.subway) return '🚇';
   if(products.tram) return '🚋';
   if(products.bus) return '🚌';
-  if(products.ferry) return '⛴';
+  return '🚉';
+}
+function mim(modes){
+  if(!modes||!modes.length) return '🚉';
+  const o=['HIGHSPEED_RAIL','LONG_DISTANCE','REGIONAL_RAIL','SUBURBAN','SUBWAY','METRO','TRAM','BUS'];
+  for(const m of o){
+    if(!modes.includes(m)) continue;
+    if(m==='HIGHSPEED_RAIL'||m==='LONG_DISTANCE') return '🚄';
+    if(m==='REGIONAL_RAIL') return '🚆';
+    if(m==='SUBURBAN') return '🚊';
+    if(m==='SUBWAY'||m==='METRO') return '🚇';
+    if(m==='TRAM') return '🚋';
+    if(m==='BUS') return '🚌';
+  }
   return '🚉';
 }
 
-/* ── FORMAT ── */
-function fmt(iso){if(!iso)return'--:--';return new Date(iso).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});}
-function durStr(s){if(!s||s<0)return'?';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h>0?`${h}h ${m}min`:`${m} min`;}
-function dmin(s,a){if(!s||!a)return 0;return Math.round((new Date(a)-new Date(s))/60000);}
+/* ── Format ── */
+function ft(iso){ return iso?new Date(iso).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'--:--'; }
+function ds(s){ if(!s||s<0)return'?'; const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); return h>0?`${h}h ${m}m`:`${m} min`; }
+function dm(a,b){ return(a&&b)?Math.round((new Date(b)-new Date(a))/60000):0; }
 
-/* ── AUTOCOMPLETE ── */
-async function fetchSug(q,field){
-  if(q.length<2){hideSug(field);return;}
-  showSugLoading(field,'Suche…');
+/* ── Autocomplete ── */
+async function fetchS(q,f){
+  if(q.length<2){hideSug(f);return;}
+  const b=document.getElementById(`${f}-sug`);
+  b.innerHTML='<div class="sug-msg">Suche…</div>'; b.style.display='block';
 
-  // Try DB HAFAS first
-  if(useDB){
+  if(dbOk){
     try{
       const r=await fetch(`${DB}/locations?query=${encodeURIComponent(q)}&results=10&stops=true&addresses=false&poi=false`,{signal:AbortSignal.timeout(5000)});
       if(r.ok){
-        const data=await r.json();
-        sugCache[field]=(data||[]).map(s=>({
-          id:s.id,name:s.name,lat:s.location?.latitude,lon:s.location?.longitude,
-          products:s.products,_db:true,
-          _icon:dbModeIcon(s.products)
-        }));
-        renderSug(field);return;
+        const d=await r.json();
+        sug[f]=(d||[]).map(s=>({id:s.id,name:s.name,lat:s.location?.latitude,lon:s.location?.longitude,products:s.products,_db:true,_ico:mi(s.products)}));
+        renderS(f); return;
       }
-    }catch(e){useDB=false;}
+    }catch{dbOk=false;}
   }
 
-  // Fallback Transitous
   try{
     const r=await fetch(`${GEO}?text=${encodeURIComponent(q)}&language=de`);
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    const RAIL=['HIGHSPEED_RAIL','LONG_DISTANCE','REGIONAL_RAIL','REGIONAL_FAST_RAIL','SUBURBAN','RAIL'];
-    const stops=(data||[]).filter(s=>s.type==='STOP');
+    if(!r.ok) throw 0;
+    const d=await r.json();
+    const RL=['HIGHSPEED_RAIL','LONG_DISTANCE','REGIONAL_RAIL','REGIONAL_FAST_RAIL','SUBURBAN','RAIL'];
+    const stops=(d||[]).filter(x=>x.type==='STOP');
     stops.sort((a,b)=>{
-      const aR=(a.modes||[]).some(m=>RAIL.includes(m));
-      const bR=(b.modes||[]).some(m=>RAIL.includes(m));
-      if(aR&&!bR)return -1;if(!aR&&bR)return 1;
+      const aR=(a.modes||[]).some(m=>RL.includes(m));
+      const bR=(b.modes||[]).some(m=>RL.includes(m));
+      if(aR&&!bR)return -1; if(!aR&&bR)return 1;
       return(b.importance||0)-(a.importance||0);
     });
-    sugCache[field]=stops.slice(0,10).map(s=>({
-      id:s.id,name:s.name,lat:s.lat,lon:s.lon,
-      modes:s.modes,_db:false,
-      _icon:modeIcon(s.modes)
-    }));
-    renderSug(field);
-  }catch(e){showSugLoading(field,'Keine Ergebnisse');}
+    sug[f]=stops.slice(0,10).map(s=>({id:s.id,name:s.name,lat:s.lat,lon:s.lon,modes:s.modes,_db:false,_ico:mim(s.modes)}));
+    renderS(f);
+  }catch{ b.innerHTML='<div class="sug-msg">Keine Ergebnisse</div>'; }
 }
 
-function showSugLoading(field,msg){
-  const b=document.getElementById(`${field}-sug`);
-  b.innerHTML=`<div class="sug-info">${msg}</div>`;
-  b.style.display='block';
-}
-function renderSug(field){
-  const b=document.getElementById(`${field}-sug`);
-  const items=sugCache[field];
-  if(!items.length){b.innerHTML='<div class="sug-info">Kein Bahnhof gefunden</div>';return;}
-  b.innerHTML=items.map((s,i)=>`
-    <div class="sug-row" onclick="pick(${i},'${field}')">
-      <div class="sug-icon">${s._icon}</div>
-      <div><div class="sug-name">${s.name}</div></div>
-    </div>`).join('');
-}
-function pick(i,field){
-  const s=sugCache[field][i];if(!s)return;
-  document.getElementById(`${field}-input`).value=s.name;
-  if(field==='from')from=s;
-  else if(field==='to')to=s;
-  else{depSt=s;loadDep();}
-  hideSug(field);
+function renderS(f){
+  const b=document.getElementById(`${f}-sug`);
+  const items=sug[f];
+  if(!items.length){b.innerHTML='<div class="sug-msg">Kein Bahnhof gefunden</div>';return;}
+  b.innerHTML=items.map((s,i)=>`<div class="sug-cell" onclick="pick(${i},'${f}')">
+    <div class="sug-ico">${s._ico}</div>
+    <div><div class="sug-name">${s.name}</div></div>
+  </div>`).join('');
 }
 function hideSug(f){const b=document.getElementById(`${f}-sug`);if(b)b.style.display='none';}
-function setupField(field){
-  const inp=document.getElementById(`${field}-input`);
-  inp.addEventListener('input',()=>{
-    if(field==='from')from=null;else if(field==='to')to=null;else depSt=null;
-    clearTimeout(debounce[field]);
-    debounce[field]=setTimeout(()=>fetchSug(inp.value.trim(),field),220);
-  });
-  inp.addEventListener('blur',()=>setTimeout(()=>hideSug(field),180));
-  inp.addEventListener('focus',()=>{if(inp.value.length>=2&&sugCache[field].length)document.getElementById(`${field}-sug`).style.display='block';});
+function pick(i,f){
+  const s=sug[f][i]; if(!s) return;
+  document.getElementById(`${f}-input`).value=s.name;
+  if(f==='from') FROM=s; else if(f==='to') TO=s; else{DEPST=s;loadDep();}
+  hideSug(f);
 }
-['from','to','dep'].forEach(setupField);
+function setF(f){
+  const inp=document.getElementById(`${f}-input`);
+  inp.addEventListener('input',()=>{
+    if(f==='from')FROM=null; else if(f==='to')TO=null; else DEPST=null;
+    clearTimeout(tmr[f]);
+    tmr[f]=setTimeout(()=>fetchS(inp.value.trim(),f),220);
+  });
+  inp.addEventListener('blur',()=>setTimeout(()=>hideSug(f),180));
+  inp.addEventListener('focus',()=>{if(inp.value.length>=2&&sug[f].length)document.getElementById(`${f}-sug`).style.display='block';});
+}
+['from','to','dep'].forEach(setF);
 
 function swap(){
   const a=document.getElementById('from-input'),b=document.getElementById('to-input');
-  [a.value,b.value]=[b.value,a.value];[from,to]=[to,from];
+  [a.value,b.value]=[b.value,a.value]; [FROM,TO]=[TO,FROM];
 }
 
-/* ── DB HAFAS JOURNEY RENDERER ── */
-function renderDB(j,idx){
-  const legs=(j.legs||[]);
-  const transit=legs.filter(l=>!l.walking);
-  if(!transit.length)return'';
-  const f=transit[0],la=transit[transit.length-1];
-  const depR=f.departure||f.plannedDeparture;
-  const depS=f.plannedDeparture;
-  const arrR=la.arrival||la.plannedArrival;
-  const arrS=la.plannedArrival;
-  const dDep=dmin(depS,depR),dArr=dmin(arrS,arrR);
-  const changes=transit.length-1;
-  const dur=(new Date(arrR)-new Date(depR))/1000;
-  const pills=transit.map(l=>`<span class="lpill" style="background:${lineColor(l.line?.name)}">${l.line?.name||'?'}</span>`).join('');
+/* ── Journey Renderers ── */
+function toggleD(i){
+  document.getElementById(`jd-${i}`).classList.toggle('open');
+  document.getElementById(`jc-${i}`).classList.toggle('open');
+}
 
-  const detail=legs.map((leg,i)=>{
-    if(leg.walking){
-      const m=Math.ceil((new Date(leg.arrival)-new Date(leg.departure))/60000);
-      return `<div class="leg">
-        <div class="leg-tl"><div class="leg-dot m"></div>
-        <div class="leg-track" style="background:repeating-linear-gradient(to bottom,#C6C6C8 0,#C6C6C8 4px,transparent 4px,transparent 9px)"></div></div>
-        <div class="leg-body"><div class="walk-row">🚶 Fußweg · ${m||1} min</div></div></div>`;
+function renderJDB(j,i){
+  const legs=j.legs||[];
+  const tr=legs.filter(l=>!l.walking);
+  if(!tr.length) return '';
+  const f=tr[0], la=tr[tr.length-1];
+  const dR=f.departure||f.plannedDeparture, dS=f.plannedDeparture;
+  const aR=la.arrival||la.plannedArrival, aS=la.plannedArrival;
+  const dd=dm(dS,dR), da=dm(aS,aR);
+  const dur=(new Date(aR)-new Date(dR))/1000;
+  const chg=tr.length-1;
+  const pills=tr.map(l=>`<span class="pill" style="background:${lc(l.line?.name)}">${l.line?.name||'?'}</span>`).join('');
+  const det=legs.map((l,k)=>{
+    if(l.walking){
+      const m=Math.ceil((new Date(l.arrival)-new Date(l.departure))/60000);
+      return`<div class="leg">
+        <div class="leg-tl"><div class="leg-dot w"></div>
+        <div class="leg-line" style="background:repeating-linear-gradient(to bottom,#C7C7CC 0,#C7C7CC 4px,transparent 4px,transparent 9px)"></div></div>
+        <div class="leg-body"><div class="walk-cell">🚶 ${m||1} min Fußweg</div></div></div>`;
     }
-    const isLast=i===legs.length-1;
-    const col=lineColor(leg.line?.name);
-    const dR=leg.departure||leg.plannedDeparture,dS=leg.plannedDeparture;
-    const aR=leg.arrival||leg.plannedArrival,aS=leg.plannedArrival;
-    const dd=dmin(dS,dR),da=dmin(aS,aR);
-    const oP=leg.departurePlatform||leg.plannedDeparturePlatform||'';
-    const dP=leg.arrivalPlatform||leg.plannedArrivalPlatform||'';
+    const last=k===legs.length-1;
+    const col=lc(l.line?.name);
+    const dr=l.departure||l.plannedDeparture, ds=l.plannedDeparture;
+    const ar=l.arrival||l.plannedArrival, as_=l.plannedArrival;
+    const dd2=dm(ds,dr), da2=dm(as_,ar);
+    const op=l.departurePlatform||l.plannedDeparturePlatform||'';
+    const ap=l.arrivalPlatform||l.plannedArrivalPlatform||'';
     return`<div class="leg">
-      <div class="leg-tl"><div class="leg-dot s"></div><div class="leg-track" style="background:${col}"></div></div>
+      <div class="leg-tl"><div class="leg-dot s"></div><div class="leg-line" style="background:${col}"></div></div>
       <div class="leg-body">
-        <div style="display:flex;align-items:baseline"><span class="leg-t">${fmt(dR)}</span>${dd>0?`<span class="leg-d late">+${dd} min</span>`:`<span class="leg-d ok">pünktlich</span>`}</div>
-        <div class="leg-name">${leg.origin?.name||'?'}</div>
-        ${oP?`<span class="leg-platform">Gleis ${oP}</span>`:''}
-        <div class="leg-transport">
-          <span class="lpill" style="background:${col}">${leg.line?.name||'?'}</span>
-          <span class="leg-dir">Richtung ${leg.direction||leg.destination?.name||''}</span>
+        <span class="leg-time">${ft(dr)}</span><span class="leg-dly ${dd2<=0?'ok':'late'}">${dd2<=0?'pünktlich':'+'+dd2+' min'}</span>
+        <div class="leg-station">${l.origin?.name||'?'}</div>
+        ${op?`<span class="leg-plat">Gleis ${op}</span>`:''}
+        <div class="leg-line-row">
+          <span class="pill" style="background:${col}">${l.line?.name||'?'}</span>
+          <span class="leg-dir">Richtung ${l.direction||l.destination?.name||''}</span>
         </div>
       </div></div>
-    ${isLast?`<div class="leg">
+    ${last?`<div class="leg">
       <div class="leg-tl"><div class="leg-dot e"></div></div>
       <div class="leg-body">
-        <div style="display:flex;align-items:baseline"><span class="leg-t">${fmt(aR)}</span>${da>0?`<span class="leg-d late">+${da} min</span>`:`<span class="leg-d ok">pünktlich</span>`}</div>
-        <div class="leg-name">${leg.destination?.name||'?'}</div>
-        ${dP?`<span class="leg-platform">Gleis ${dP}</span>`:''}
+        <span class="leg-time">${ft(ar)}</span><span class="leg-dly ${da2<=0?'ok':'late'}">${da2<=0?'pünktlich':'+'+da2+' min'}</span>
+        <div class="leg-station">${l.destination?.name||'?'}</div>
+        ${ap?`<span class="leg-plat">Gleis ${ap}</span>`:''}
       </div></div>`:''}`;
   }).join('');
-
-  return`<div class="jcard" onclick="toggleD(${idx})">
-    <div class="jhead">
-      <div class="jtime-col">
-        <div class="jtime-big">${fmt(depR)}</div>
-        <span class="jdelay-tag ${dDep<=0?'ok':'late'}">${dDep<=0?'pünktlich':'+'+dDep+' min'}</span>
-        <div class="jstation-name">${from?.name||f.origin?.name||''}</div>
-      </div>
-      <div class="jmid-col">
-        <div class="jdur-text">${durStr(dur)}</div>
-        <div class="jroute-bar"></div>
-        <div class="jchanges-text">${changes===0?'Direkt':changes+' Umst.'}</div>
-      </div>
-      <div class="jtime-col right">
-        <div class="jtime-big">${fmt(arrR)}</div>
-        <span class="jdelay-tag ${dArr<=0?'ok':'late'}">${dArr<=0?'pünktlich':'+'+dArr+' min'}</span>
-        <div class="jstation-name" style="text-align:right">${to?.name||la.destination?.name||''}</div>
-      </div>
+  return`<div class="jcard" onclick="toggleD(${i})">
+    <div class="j-row">
+      <div><div class="j-time">${ft(dR)}</div><div class="j-delay ${dd<=0?'ok':'late'}">${dd<=0?'pünktlich':'+'+dd+' min'}</div></div>
+      <div class="j-mid"><div class="j-dur">${ds(dur)}</div><div class="j-bar"></div><div class="j-chg">${chg===0?'Direkt':chg+' Umst.'}</div></div>
+      <div class="j-end"><div class="j-time">${ft(aR)}</div><div class="j-delay ${da<=0?'ok':'late'}">${da<=0?'pünktlich':'+'+da+' min'}</div></div>
     </div>
-    <div class="jpills-row">${pills}</div>
-    <div class="jchev-row">Details <span class="chevron" id="chev-${idx}">▼</span></div>
-    <div class="jdetail" id="detail-${idx}">${detail}</div>
+    <div class="j-pills">${pills}</div>
+    <div class="j-sep"></div>
+    <div class="j-chevron">Details <span class="chev" id="jc-${i}">▾</span></div>
+    <div class="j-detail" id="jd-${i}">${det}</div>
   </div>`;
 }
 
-/* ── TRANSITOUS JOURNEY RENDERER ── */
-function renderTransit(it,idx){
+function renderJT(it,i){
   const legs=it.legs||[];
   const SKIP=['HIGHSPEED_RAIL','LONG_DISTANCE','NIGHT_RAIL','COACH'];
-  const transit=legs.filter(l=>l.mode!=='WALK');
-  if(!transit.length||transit.some(l=>SKIP.includes(l.mode)))return'';
-  const f=transit[0],la=transit[transit.length-1];
-  const depR=f.from?.departure||f.startTime;
-  const depS=f.from?.scheduledDeparture||f.scheduledStartTime;
-  const arrR=la.to?.arrival||la.endTime;
-  const arrS=la.to?.scheduledArrival||la.scheduledEndTime;
-  const dDep=f.realTime?dmin(depS,depR):0;
-  const dArr=la.realTime?dmin(arrS,arrR):0;
-  const changes=it.transfers??Math.max(0,transit.length-1);
-  const pills=transit.map(l=>{
-    const n=l.routeShortName||l.displayName||'?';
-    return`<span class="lpill" style="background:${modeColor(l.mode)}">${n}</span>`;
-  }).join('');
-  const detail=legs.map((leg,i)=>{
-    if(leg.mode==='WALK'){
-      const m=Math.round((leg.duration||0)/60);
+  const tr=legs.filter(l=>l.mode!=='WALK');
+  if(!tr.length||tr.some(l=>SKIP.includes(l.mode))) return '';
+  const f=tr[0], la=tr[tr.length-1];
+  const dR=f.from?.departure||f.startTime, dS=f.from?.scheduledDeparture||f.scheduledStartTime;
+  const aR=la.to?.arrival||la.endTime, aS=la.to?.scheduledArrival||la.scheduledEndTime;
+  const dd=f.realTime?dm(dS,dR):0, da=la.realTime?dm(aS,aR):0;
+  const chg=it.transfers??Math.max(0,tr.length-1);
+  const pills=tr.map(l=>`<span class="pill" style="background:${mc(l.mode)}">${l.routeShortName||l.displayName||'?'}</span>`).join('');
+  const det=legs.map((l,k)=>{
+    if(l.mode==='WALK'){
+      const m=Math.round((l.duration||0)/60);
       return`<div class="leg">
-        <div class="leg-tl"><div class="leg-dot m"></div>
-        <div class="leg-track" style="background:repeating-linear-gradient(to bottom,#C6C6C8 0,#C6C6C8 4px,transparent 4px,transparent 9px)"></div></div>
-        <div class="leg-body"><div class="walk-row">🚶 Fußweg · ${m||1} min</div></div></div>`;
+        <div class="leg-tl"><div class="leg-dot w"></div>
+        <div class="leg-line" style="background:repeating-linear-gradient(to bottom,#C7C7CC 0,#C7C7CC 4px,transparent 4px,transparent 9px)"></div></div>
+        <div class="leg-body"><div class="walk-cell">🚶 ${m||1} min Fußweg</div></div></div>`;
     }
-    const isLast=i===legs.length-1;
-    const col=modeColor(leg.mode);
-    const n=leg.routeShortName||leg.displayName||'?';
-    const dR=leg.from?.departure||leg.startTime,dS=leg.from?.scheduledDeparture||leg.scheduledStartTime;
-    const aR=leg.to?.arrival||leg.endTime,aS=leg.to?.scheduledArrival||leg.scheduledEndTime;
-    const dd=leg.realTime?dmin(dS,dR):0,da=leg.realTime?dmin(aS,aR):0;
-    const oT=leg.from?.track||leg.from?.scheduledTrack||'';
-    const dT=leg.to?.track||leg.to?.scheduledTrack||'';
+    const last=k===legs.length-1;
+    const col=mc(l.mode);
+    const n=l.routeShortName||l.displayName||'?';
+    const dr=l.from?.departure||l.startTime, ds=l.from?.scheduledDeparture||l.scheduledStartTime;
+    const ar=l.to?.arrival||l.endTime, as_=l.to?.scheduledArrival||l.scheduledEndTime;
+    const dd2=l.realTime?dm(ds,dr):0, da2=l.realTime?dm(as_,ar):0;
+    const ot=l.from?.track||l.from?.scheduledTrack||'';
+    const dt=l.to?.track||l.to?.scheduledTrack||'';
     return`<div class="leg">
-      <div class="leg-tl"><div class="leg-dot s"></div><div class="leg-track" style="background:${col}"></div></div>
+      <div class="leg-tl"><div class="leg-dot s"></div><div class="leg-line" style="background:${col}"></div></div>
       <div class="leg-body">
-        <div style="display:flex;align-items:baseline"><span class="leg-t">${fmt(dR)}</span>${dd>0?`<span class="leg-d late">+${dd} min</span>`:`<span class="leg-d ok">pünktlich</span>`}</div>
-        <div class="leg-name">${leg.from?.name||'?'}</div>
-        ${oT?`<span class="leg-platform">Gleis ${oT}</span>`:''}
-        <div class="leg-transport">
-          <span class="lpill" style="background:${col}">${n}</span>
-          <span class="leg-dir">Richtung ${leg.headsign||leg.to?.name||''}</span>
+        <span class="leg-time">${ft(dr)}</span><span class="leg-dly ${dd2<=0?'ok':'late'}">${dd2<=0?'pünktlich':'+'+dd2+' min'}</span>
+        <div class="leg-station">${l.from?.name||'?'}</div>
+        ${ot?`<span class="leg-plat">Gleis ${ot}</span>`:''}
+        <div class="leg-line-row">
+          <span class="pill" style="background:${col}">${n}</span>
+          <span class="leg-dir">Richtung ${l.headsign||l.to?.name||''}</span>
         </div>
       </div></div>
-    ${isLast?`<div class="leg">
+    ${last?`<div class="leg">
       <div class="leg-tl"><div class="leg-dot e"></div></div>
       <div class="leg-body">
-        <div style="display:flex;align-items:baseline"><span class="leg-t">${fmt(aR)}</span>${da>0?`<span class="leg-d late">+${da} min</span>`:`<span class="leg-d ok">pünktlich</span>`}</div>
-        <div class="leg-name">${leg.to?.name||'?'}</div>
-        ${dT?`<span class="leg-platform">Gleis ${dT}</span>`:''}
+        <span class="leg-time">${ft(ar)}</span><span class="leg-dly ${da2<=0?'ok':'late'}">${da2<=0?'pünktlich':'+'+da2+' min'}</span>
+        <div class="leg-station">${l.to?.name||'?'}</div>
+        ${dt?`<span class="leg-plat">Gleis ${dt}</span>`:''}
       </div></div>`:''}`;
   }).join('');
-  return`<div class="jcard" onclick="toggleD(${idx})">
-    <div class="jhead">
-      <div class="jtime-col">
-        <div class="jtime-big">${fmt(depR)}</div>
-        <span class="jdelay-tag ${dDep<=0?'ok':'late'}">${dDep<=0?'pünktlich':'+'+dDep+' min'}</span>
-        <div class="jstation-name">${from?.name||f.from?.name||''}</div>
-      </div>
-      <div class="jmid-col">
-        <div class="jdur-text">${durStr(it.duration)}</div>
-        <div class="jroute-bar"></div>
-        <div class="jchanges-text">${changes===0?'Direkt':changes+' Umst.'}</div>
-      </div>
-      <div class="jtime-col right">
-        <div class="jtime-big">${fmt(arrR)}</div>
-        <span class="jdelay-tag ${dArr<=0?'ok':'late'}">${dArr<=0?'pünktlich':'+'+dArr+' min'}</span>
-        <div class="jstation-name" style="text-align:right">${to?.name||la.to?.name||''}</div>
-      </div>
+  return`<div class="jcard" onclick="toggleD(${i})">
+    <div class="j-row">
+      <div><div class="j-time">${ft(dR)}</div><div class="j-delay ${dd<=0?'ok':'late'}">${dd<=0?'pünktlich':'+'+dd+' min'}</div></div>
+      <div class="j-mid"><div class="j-dur">${ds(it.duration)}</div><div class="j-bar"></div><div class="j-chg">${chg===0?'Direkt':chg+' Umst.'}</div></div>
+      <div class="j-end"><div class="j-time">${ft(aR)}</div><div class="j-delay ${da<=0?'ok':'late'}">${da<=0?'pünktlich':'+'+da+' min'}</div></div>
     </div>
-    <div class="jpills-row">${pills}</div>
-    <div class="jchev-row">Details <span class="chevron" id="chev-${idx}">▼</span></div>
-    <div class="jdetail" id="detail-${idx}">${detail}</div>
+    <div class="j-pills">${pills}</div>
+    <div class="j-sep"></div>
+    <div class="j-chevron">Details <span class="chev" id="jc-${i}">▾</span></div>
+    <div class="j-detail" id="jd-${i}">${det}</div>
   </div>`;
 }
 
-function toggleD(i){
-  document.getElementById(`detail-${i}`).classList.toggle('open');
-  document.getElementById(`chev-${i}`).classList.toggle('open');
-}
-
-/* ── SEARCH ── */
+/* ── Search ── */
 async function search(){
-  if(!from||!to){alert('Bitte Start und Ziel aus der Liste auswählen.');return;}
+  if(!FROM||!TO){alert('Bitte Start und Ziel aus der Liste wählen.');return;}
   const btn=document.getElementById('go-btn');
-  btn.disabled=true;btn.innerHTML='Suche läuft…';
-  document.getElementById('results').innerHTML='<div class="spinner-wrap"><div class="spinner"></div></div>';
-  const date=document.getElementById('tdate').value,time=document.getElementById('ttime').value;
+  btn.disabled=true; btn.textContent='Suche…';
+  document.getElementById('results').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const date=document.getElementById('tdate').value, time=document.getElementById('ttime').value;
   const arrBy=document.getElementById('dep-arr').value==='arr';
   const when=new Date(`${date}T${time}:00`).toISOString();
 
-  // Try DB HAFAS
-  if(useDB&&from._db&&to._db){
+  if(dbOk&&FROM._db&&TO._db){
     try{
-      const p=new URLSearchParams({from:from.id,to:to.id,results:'8',stopovers:'false',remarks:'false',language:'de'});
+      const p=new URLSearchParams({from:FROM.id,to:TO.id,results:'8',stopovers:'false',remarks:'false',language:'de'});
       p.set(arrBy?'arrival':'departure',when);
       const r=await fetch(`${DB}/journeys?${p}`,{signal:AbortSignal.timeout(8000)});
       if(r.ok){
         const d=await r.json();
-        const cards=(d.journeys||[]).map((j,i)=>renderDB(j,i)).filter(Boolean);
-        showResults(cards,'DB Echtzeit');
-        done(btn);return;
+        const cards=(d.journeys||[]).map((j,i)=>renderJDB(j,i)).filter(Boolean);
+        showR(cards,true); btn.disabled=false; btn.textContent='Suchen'; return;
       }
-    }catch(e){useDB=false;}
+    }catch{dbOk=false;}
   }
 
-  // Transitous fallback
   try{
-    const p=new URLSearchParams({fromPlace:`${from.lat},${from.lon}`,toPlace:`${to.lat},${to.lon}`,time:when,arriveBy:String(arrBy),numItineraries:'8'});
+    const p=new URLSearchParams({fromPlace:`${FROM.lat},${FROM.lon}`,toPlace:`${TO.lat},${TO.lon}`,time:when,arriveBy:String(arrBy),numItineraries:'8'});
     const r=await fetch(`${PLAN}?${p}`);
-    if(!r.ok)throw new Error(`Fehler ${r.status}`);
+    if(!r.ok) throw new Error(`Fehler ${r.status}`);
     const d=await r.json();
-    const cards=(d.itineraries||[]).map((it,i)=>renderTransit(it,i)).filter(Boolean);
-    showResults(cards,'Fahrplan');
+    const cards=(d.itineraries||[]).map((it,i)=>renderJT(it,i)).filter(Boolean);
+    showR(cards,false);
   }catch(e){
-    document.getElementById('results').innerHTML=`<div class="err-box">❌ ${e.message}</div>`;
+    document.getElementById('results').innerHTML=`<div class="err">❌ ${e.message}</div>`;
   }
-  done(btn);
+  btn.disabled=false; btn.textContent='Suchen';
 }
-function showResults(cards,src){
+function showR(cards,rt){
   const box=document.getElementById('results');
   if(!cards.length){
-    box.innerHTML='<div class="empty-state"><div class="eicon">🔍</div><div class="etxt">Keine Verbindungen gefunden.<br>Anderen Zeitpunkt versuchen.</div></div>';
+    box.innerHTML='<div class="empty"><div class="empty-ico">🔍</div><div class="empty-txt">Keine Verbindungen</div><div class="empty-sub">Anderen Zeitpunkt versuchen</div></div>';
     return;
   }
-  box.innerHTML=`<div class="result-notice"><div class="live-dot"></div>${cards.length} Verbindungen · ${src}</div>`+cards.join('');
+  box.innerHTML=`<div class="section" style="margin-top:0">
+    <div class="live-row"><div class="live-dot"></div>${cards.length} Verbindungen${rt?' · DB Echtzeit':''}</div>
+    ${cards.join('')}
+  </div>`;
 }
-function done(btn){btn.disabled=false;btn.innerHTML='Verbindungen suchen';}
 
-/* ── DEPARTURES ── */
+/* ── Departures ── */
 async function loadDep(){
-  if(!depSt)return;
+  if(!DEPST) return;
   const box=document.getElementById('dep-results');
-  box.innerHTML='<div class="spinner-wrap"><div class="spinner"></div></div>';
-
-  // Try DB stoptimes
-  if(useDB&&depSt._db){
+  box.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  if(dbOk&&DEPST._db){
     try{
-      const r=await fetch(`${DB}/stops/${encodeURIComponent(depSt.id)}/departures?results=20&duration=120`,{signal:AbortSignal.timeout(6000)});
-      if(r.ok){
-        const data=await r.json();
-        renderDepDB(data.departures||data);return;
-      }
-    }catch(e){useDB=false;}
+      const r=await fetch(`${DB}/stops/${encodeURIComponent(DEPST.id)}/departures?results=20&duration=120`,{signal:AbortSignal.timeout(6000)});
+      if(r.ok){const d=await r.json();renderDepDB(d.departures||d);return;}
+    }catch{dbOk=false;}
   }
-
-  // Transitous stoptimes
   try{
-    const r=await fetch(`${STOP}?stopId=${encodeURIComponent(depSt.id)}&n=20&time=${new Date().toISOString()}`);
-    if(!r.ok)throw new Error(`Fehler ${r.status}`);
-    const data=await r.json();
-    renderDepTransitous(data.stopTimes||[]);
-  }catch(e){
-    box.innerHTML=`<div class="err-box">❌ ${e.message}</div>`;
-  }
+    const r=await fetch(`${DEPAPI}?stopId=${encodeURIComponent(DEPST.id)}&n=20&time=${new Date().toISOString()}`);
+    if(!r.ok) throw new Error(`Fehler ${r.status}`);
+    const d=await r.json();
+    renderDepT(d.stopTimes||[]);
+  }catch(e){box.innerHTML=`<div class="err">❌ ${e.message}</div>`;}
+}
+function depHeader(){
+  const s=isFav(DEPST.id);
+  return`<div class="section" style="margin-top:0">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 6px">
+      <div style="font-size:20px;font-weight:700">${DEPST.name}</div>
+      <button class="star-btn ${s?'on':''}" onclick="toggleFav()">${s?'★':'☆'}</button>
+    </div>
+    <div class="cell-group">`;
 }
 function renderDepDB(deps){
-  if(!deps.length){document.getElementById('dep-results').innerHTML='<div class="empty-state"><div class="eico">😴</div><div class="etxt">Keine Abfahrten</div></div>';return;}
-  const saved=isFav(depSt.id);
+  if(!deps.length){document.getElementById('dep-results').innerHTML='<div class="empty"><div class="empty-ico">😴</div><div class="empty-txt">Keine Abfahrten</div></div>';return;}
   const rows=deps.map(d=>{
-    const col=lineColor(d.line?.name);
-    const depR=d.when||d.plannedWhen,depS=d.plannedWhen;
-    const dd=dmin(depS,depR);
-    const plat=d.platform||d.plannedPlatform||'';
-    return`<div class="dep-item">
-      <span class="lpill" style="background:${col};font-size:13px">${d.line?.name||'?'}</span>
+    const col=lc(d.line?.name);
+    const dr=d.when||d.plannedWhen, ds=d.plannedWhen;
+    const dd=dm(ds,dr);
+    const pl=d.platform||d.plannedPlatform||'';
+    return`<div class="dep-cell">
+      <span class="pill" style="background:${col};font-size:12px;flex-shrink:0">${d.line?.name||'?'}</span>
       <div class="dep-info">
         <div class="dep-dest">${d.direction||'?'}</div>
-        ${plat?`<div class="dep-via">Gleis ${plat}</div>`:''}
+        ${pl?`<div class="dep-plat">Gleis ${pl}</div>`:''}
       </div>
       <div class="dep-right">
-        <div class="dep-time">${fmt(depR)}</div>
+        <div class="dep-time">${ft(dr)}</div>
         <div class="dep-delay ${dd<=0?'ok':'late'}">${dd<=0?'pünktl.':'+'+dd+' min'}</div>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('dep-results').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 8px">
-      <div class="section-hd" style="margin:0">${depSt.name}</div>
-      <button class="save-btn ${saved?'saved':''}" onclick="toggleFav()" title="${saved?'Gespeichert':'Speichern'}">${saved?'★':'☆'}</button>
-    </div>
-    <div class="ios-group">${rows}</div>`;
+  document.getElementById('dep-results').innerHTML=depHeader()+rows+'</div></div>';
 }
-function renderDepTransitous(times){
-  if(!times.length){document.getElementById('dep-results').innerHTML='<div class="empty-state"><div class="eico">😴</div><div class="etxt">Keine Abfahrten</div></div>';return;}
-  const saved=isFav(depSt.id);
+function renderDepT(times){
+  if(!times.length){document.getElementById('dep-results').innerHTML='<div class="empty"><div class="empty-ico">😴</div><div class="empty-txt">Keine Abfahrten</div></div>';return;}
   const rows=times.map(t=>{
-    const col=modeColor(t.mode);
+    const col=mc(t.mode);
     const n=t.routeShortName||t.displayName||'?';
-    const depR=t.place?.departure,depS=t.place?.scheduledDeparture;
-    const dd=t.realTime?dmin(depS,depR):0;
-    const track=t.place?.track||t.place?.scheduledTrack||'';
-    return`<div class="dep-item">
-      <span class="lpill" style="background:${col};font-size:13px">${n}</span>
+    const dr=t.place?.departure, ds=t.place?.scheduledDeparture;
+    const dd=t.realTime?dm(ds,dr):0;
+    const tr=t.place?.track||t.place?.scheduledTrack||'';
+    return`<div class="dep-cell">
+      <span class="pill" style="background:${col};font-size:12px;flex-shrink:0">${n}</span>
       <div class="dep-info">
         <div class="dep-dest">${t.headsign||'?'}</div>
-        ${track?`<div class="dep-via">Gleis ${track}</div>`:''}
+        ${tr?`<div class="dep-plat">Gleis ${tr}</div>`:''}
       </div>
       <div class="dep-right">
-        <div class="dep-time">${fmt(depR)}</div>
+        <div class="dep-time">${ft(dr)}</div>
         ${t.realTime?`<div class="dep-delay ${dd<=0?'ok':'late'}">${dd<=0?'pünktl.':'+'+dd+' min'}</div>`:''}
       </div>
     </div>`;
   }).join('');
-  document.getElementById('dep-results').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 8px">
-      <div class="section-hd" style="margin:0">${depSt.name}</div>
-      <button class="save-btn ${saved?'saved':''}" onclick="toggleFav()" title="${saved?'Gespeichert':'Speichern'}">${saved?'★':'☆'}</button>
-    </div>
-    <div class="ios-group">${rows}</div>`;
+  document.getElementById('dep-results').innerHTML=depHeader()+rows+'</div></div>';
 }
 
-/* ── FAVORITES ── */
+/* ── Favorites ── */
 function getFavs(){try{return JSON.parse(localStorage.getItem('zugFavs')||'[]');}catch{return[];}}
 function setFavs(f){localStorage.setItem('zugFavs',JSON.stringify(f));}
 function isFav(id){return getFavs().some(f=>f.id===id);}
 function toggleFav(){
-  if(!depSt)return;
+  if(!DEPST)return;
   let favs=getFavs();
-  if(isFav(depSt.id))favs=favs.filter(f=>f.id!==depSt.id);
-  else favs.unshift({id:depSt.id,name:depSt.name,_icon:depSt._icon||'🚉',_db:depSt._db,lat:depSt.lat,lon:depSt.lon,products:depSt.products,modes:depSt.modes});
-  setFavs(favs);loadDep();
+  if(isFav(DEPST.id)) favs=favs.filter(f=>f.id!==DEPST.id);
+  else favs.unshift({id:DEPST.id,name:DEPST.name,_ico:DEPST._ico||'🚉',_db:DEPST._db,lat:DEPST.lat,lon:DEPST.lon,products:DEPST.products,modes:DEPST.modes});
+  setFavs(favs); loadDep();
 }
 function renderFavs(){
   const favs=getFavs();
   const box=document.getElementById('fav-content');
   if(!favs.length){
-    box.innerHTML='<div class="empty-state"><div class="eico">⭐</div><div class="etxt">Noch keine Favoriten.<br>Unter „Abfahrten" ★ tippen.</div></div>';
+    box.innerHTML='<div class="empty"><div class="empty-ico">⭐</div><div class="empty-txt">Keine Favoriten</div><div class="empty-sub">Unter Abfahrten ★ tippen</div></div>';
     return;
   }
-  box.innerHTML=`<div class="section-hd">Gespeicherte Bahnhöfe</div>
-  <div class="ios-group">
-  ${favs.map((f,i)=>`<div class="fav-item">
-    <div class="fav-ico">${f._icon||'🚉'}</div>
-    <div class="fav-body" onclick="openFav(${i})" style="cursor:pointer">
-      <div class="fav-name">${f.name}</div>
-      <div class="fav-sub">Abfahrten ansehen →</div>
+  box.innerHTML=`<div class="section" style="margin-top:0">
+    <div class="section-title">Gespeicherte Bahnhöfe</div>
+    <div class="cell-group">
+      ${favs.map((f,i)=>`<div class="fav-cell">
+        <div class="fav-ico">${f._ico||'🚉'}</div>
+        <div class="fav-text" onclick="openFav(${i})" style="cursor:pointer">
+          <div class="fav-name">${f.name}</div>
+          <div class="fav-sub">Abfahrten ansehen</div>
+        </div>
+        <button class="fav-del" onclick="delFav('${f.id.replace(/'/g,"\\'")}')">✕</button>
+      </div>`).join('')}
     </div>
-    <button class="fav-del" onclick="delFav('${f.id.replace(/'/g,"\\'")}')">✕</button>
-  </div>`).join('')}
   </div>`;
 }
 function openFav(i){
-  const f=getFavs()[i];if(!f)return;
-  depSt=f;
+  const f=getFavs()[i]; if(!f)return;
+  DEPST=f;
   document.getElementById('dep-input').value=f.name;
-  goTab('dep');loadDep();
+  document.querySelector('[data-p="dep"]').click();
+  loadDep();
 }
 function delFav(id){setFavs(getFavs().filter(f=>f.id!==id));renderFavs();}
 </script>
