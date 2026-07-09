@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root{
+    --red:#e51f2e; --red-deep:#b0101c; --ink:#1a1a20; --muted:#5c5c68;
+    --line:#e7e7ec; --soft:#f6f6f8; --softred:#fdf0f1;
+  }
+  *{box-sizing:border-box;}
+  @page{ size:A4; margin:20mm 0 18mm; }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink);
+    font-size:10.6pt; line-height:1.62; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .wrap{ padding:0 18mm; }
+
+  /* ---------- Deckblatt ---------- */
+  .cover{
+    height:257mm; position:relative; page-break-after:always; overflow:hidden;
+    background:linear-gradient(160deg,#0c0c0f 0%,#171015 55%,#25060a 100%);
+    color:#fff; padding:0;
+  }
+  .cover .glow{ position:absolute; width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(229,31,46,.55),transparent 62%);
+    top:-140px; right:-120px; filter:blur(6px); }
+  .cover .glow2{ position:absolute; width:360px;height:360px;border-radius:50%;
+    background:radial-gradient(circle,rgba(229,31,46,.28),transparent 65%);
+    bottom:-80px; left:-90px; }
+  .cover .inner{ position:relative; z-index:2; padding:40mm 22mm 0; }
+  .logo{ display:flex; align-items:center; gap:14px; margin-bottom:70mm; }
+  .logo .mark{ width:56px;height:56px;border-radius:15px;
+    background:linear-gradient(135deg,#ff3546,#b0101c); display:flex;align-items:center;justify-content:center;
+    font-style:italic;font-weight:800;font-size:32px; box-shadow:0 10px 34px rgba(229,31,46,.5); }
+  .logo .name{ font-size:26px; font-weight:800; letter-spacing:5px; }
+  .cover .kicker{ color:var(--red); font-weight:700; letter-spacing:3px; font-size:12px; text-transform:uppercase; margin-bottom:12px; }
+  .cover h1{ font-size:46px; line-height:1.08; font-weight:800; margin:0 0 10px; letter-spacing:-1px; }
+  .cover h1 .accent{ color:var(--red); }
+  .cover .sub{ font-size:15px; color:#c9c9d2; max-width:150mm; }
+  .cover .rule{ width:64px;height:5px;background:var(--red);border-radius:3px;margin:26px 0 22px; }
+  .cover .meta{ position:absolute; bottom:26mm; left:22mm; right:22mm; z-index:2;
+    display:flex; justify-content:space-between; color:#9a9aa6; font-size:11px;
+    border-top:1px solid rgba(255,255,255,.14); padding-top:14px; }
+  .cover .meta b{ color:#fff; font-weight:600; }
+
+  /* ---------- Inhalt ---------- */
+  h2{ font-size:17pt; font-weight:800; color:var(--ink); margin:26px 0 4px;
+     padding-top:6px; letter-spacing:-.3px; }
+  h2 .num{ color:var(--red); font-weight:800; margin-right:10px; }
+  h2 + .lead{ color:var(--muted); margin:0 0 14px; font-size:10.4pt; }
+  .sec-rule{ height:3px;width:46px;background:var(--red);border-radius:2px;margin:2px 0 14px; }
+  h3{ font-size:11.6pt; font-weight:750; margin:18px 0 6px; color:#2a2a32; }
+  p{ margin:8px 0; }
+  ul{ margin:8px 0; padding-left:20px; }
+  li{ margin:4px 0; }
+  ul.clean{ list-style:none; padding-left:2px; }
+  ul.clean li{ position:relative; padding-left:20px; }
+  ul.clean li::before{ content:''; position:absolute; left:2px; top:8px; width:7px;height:7px;
+    border-radius:50%; background:var(--red); }
+  strong{ color:#111; }
+  .avoid-break{ page-break-inside:avoid; }
+
+  /* Intro-Absatz nach Deckblatt */
+  .section{ page-break-inside:auto; }
+
+  /* Callout / Beispiel-Box */
+  .box{ background:var(--soft); border:1px solid var(--line); border-left:4px solid var(--red);
+    border-radius:10px; padding:14px 18px; margin:14px 0; page-break-inside:avoid; }
+  .box .label{ font-size:9pt; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--red); margin-bottom:6px; }
+  .box.q{ background:var(--softred); }
+  .flow{ font-family:"SF Mono",Consolas,monospace; font-size:9.6pt; color:#333; line-height:1.9; }
+  .flow .arrow{ color:var(--red); font-weight:700; }
+
+  /* Zwei-Spalten Karten */
+  .cards{ display:flex; flex-wrap:wrap; gap:12px; margin:14px 0; }
+  .card{ flex:1 1 46%; background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; page-break-inside:avoid; }
+  .card h4{ margin:0 0 6px; font-size:10.8pt; color:var(--red-deep); }
+  .card ul{ margin:4px 0 0; }
+
+  /* Architektur-Diagramm */
+  .arch{ page-break-inside:avoid; margin:16px 0; text-align:center; }
+  .arch .app{ display:inline-block; background:linear-gradient(135deg,#ff3546,#b0101c); color:#fff;
+    font-weight:700; padding:12px 26px; border-radius:12px; box-shadow:0 8px 22px rgba(229,31,46,.3); font-size:11pt; }
+  .arch .stem{ width:2px; height:20px; background:#cfcfd6; margin:0 auto; }
+  .arch .backend{ display:inline-block; background:var(--ink); color:#fff; font-weight:650;
+    padding:10px 24px; border-radius:10px; font-size:10pt; }
+  .arch .sys{ display:flex; gap:10px; justify-content:center; margin-top:6px; flex-wrap:wrap; }
+  .arch .node{ background:var(--soft); border:1px solid var(--line); border-top:3px solid var(--red);
+    border-radius:10px; padding:10px 12px; min-width:96px; }
+  .arch .node b{ display:block; font-size:9.8pt; color:var(--ink); }
+  .arch .node span{ font-size:8.2pt; color:var(--muted); }
+
+  /* Phasen */
+  .phase{ display:flex; gap:14px; margin:12px 0; page-break-inside:avoid; align-items:flex-start; }
+  .phase .n{ flex:0 0 auto; width:40px;height:40px;border-radius:11px; background:var(--red);
+    color:#fff; font-weight:800; display:flex;align-items:center;justify-content:center; font-size:14pt;
+    box-shadow:0 6px 16px rgba(229,31,46,.28); }
+  .phase .b h4{ margin:2px 0 4px; font-size:11pt; }
+  .phase .b ul{ margin:2px 0; }
+
+  /* Vorteile-Grid */
+  .benefits{ display:flex; flex-wrap:wrap; gap:10px; margin:14px 0; }
+  .benefit{ flex:1 1 46%; background:var(--soft); border-radius:10px; padding:11px 14px 11px 16px;
+    border-left:3px solid var(--red); font-size:10pt; page-break-inside:avoid; }
+
+  /* Fazit */
+  .fazit{ background:linear-gradient(160deg,#141018,#22070b); color:#fff; border-radius:16px;
+    padding:24px 26px; margin:18px 0 6px; page-break-inside:avoid; }
+  .fazit h2{ color:#fff; margin-top:0; }
+  .fazit h2 .num{ color:var(--red); }
+  .fazit p{ color:#d7d7de; }
+  .fazit .sec-rule{ background:var(--red); }
+
+  .footer-note{ text-align:center; color:#9a9aa6; font-size:8.6pt; margin-top:22px; }
+</style>
+</head>
+<body>
+
+  <!-- ===================== DECKBLATT ===================== -->
+  <div class="cover">
+    <div class="glow"></div>
+    <div class="glow2"></div>
+    <div class="inner">
+      <div class="logo">
+        <div class="mark">Ł</div>
+        <div class="name">LEVITECH</div>
+      </div>
+      <div class="kicker">Technisches Konzept</div>
+      <h1>LEVITECH<br><span class="accent">Workspace App</span></h1>
+      <div class="rule"></div>
+      <div class="sub">Zentrale Mitarbeiter-App zur Verbindung bestehender Systeme —
+        eine All-in-One-Arbeitsplattform, die TANSS, TimeCard, Microsoft&nbsp;365,
+        Dokumentationen und einen KI-Assistenten an einem Ort zusammenführt.</div>
+    </div>
+    <div class="meta">
+      <span>Technisches Konzept · Interne Verwendung</span>
+      <span><b>LEVITECH</b> · Workspace App</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- 1 -->
+    <div class="section">
+      <h2><span class="num">01</span>Projektidee</h2>
+      <div class="sec-rule"></div>
+      <p>Die Idee der <strong>LEVITECH Workspace App</strong> ist die Entwicklung einer zentralen
+      mobilen Anwendung, welche die bereits vorhandenen Systeme und Informationen von LEVITECH an
+      einem Ort zusammenführt. Dabei soll die App ausdrücklich <strong>keine bestehenden Systeme ersetzen</strong>.</p>
+      <p>Systeme wie TANSS / TANSS Mobile, TimeCard, Microsoft&nbsp;365, vorhandene Dokumentationssysteme
+      und Monitoring-Systeme bleiben weiterhin bestehen und können von Mitarbeitern wie gewohnt genutzt werden.</p>
+      <p>Die App stellt lediglich eine <strong>zusätzliche Oberfläche</strong> bereit, über die wichtige
+      Funktionen und Informationen bequem auf dem Smartphone erreichbar sind. Das Ziel ist eine
+      All-in-One-Mitarbeiter-App, die den Arbeitsalltag einfacher macht, ohne bestehende Prozesse zu verändern.</p>
+    </div>
+
+    <!-- 2 -->
+    <div class="section">
+      <h2><span class="num">02</span>Grundgedanke</h2>
+      <div class="sec-rule"></div>
+      <p>Aktuell müssen Mitarbeiter je nach Aufgabe verschiedene Anwendungen öffnen:</p>
+      <ul class="clean">
+        <li><strong>TANSS</strong> für Tickets, Kunden, Geräte und technische Vorgänge</li>
+        <li><strong>TimeCard</strong> für Arbeitszeiten</li>
+        <li><strong>Outlook</strong> für Termine</li>
+        <li><strong>Teams</strong> für Kommunikation</li>
+        <li><strong>Dokumentationen</strong> für technische Informationen</li>
+        <li>verschiedene Systeme für Monitoring oder interne Informationen</li>
+      </ul>
+      <p>Die LEVITECH Workspace App bündelt diese Informationen in einer zentralen Anwendung. Der Mitarbeiter
+      bekommt eine Übersicht über alles Wichtige, kann aber weiterhin jederzeit die bestehenden Systeme direkt verwenden.</p>
+      <div class="box">
+        <div class="label">Beispiel · Startseite</div>
+        <ul class="clean" style="margin:0">
+          <li>Offene TANSS-Tickets</li>
+          <li>Aktueller TimeCard-Status</li>
+          <li>Nächste Termine</li>
+          <li>Wichtige Firmeninformationen</li>
+          <li>Benachrichtigungen</li>
+          <li>Zugriff auf Dokumentationen</li>
+          <li>KI-Assistent</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="section">
+      <h2><span class="num">03</span>Technischer Aufbau</h2>
+      <div class="sec-rule"></div>
+      <p>Die App wird nicht als neues unabhängiges System aufgebaut, sondern verbindet bestehende
+      Systeme über Schnittstellen.</p>
+      <div class="arch">
+        <div class="app">LEVITECH Workspace App</div>
+        <div class="stem"></div>
+        <div class="backend">Backend / API</div>
+        <div class="stem"></div>
+        <div class="sys">
+          <div class="node"><b>TANSS</b><span>API</span></div>
+          <div class="node"><b>TimeCard</b><span>Schnittstelle</span></div>
+          <div class="node"><b>Microsoft 365</b><span>APIs</span></div>
+          <div class="node"><b>Weitere</b><span>Integrationen</span></div>
+        </div>
+      </div>
+      <p>Die zentrale Backend-Schicht übernimmt:</p>
+      <ul class="clean">
+        <li>Sichere Kommunikation mit den Systemen</li>
+        <li>Benutzerverwaltung</li>
+        <li>Berechtigungen</li>
+        <li>Verarbeitung der Daten</li>
+        <li>Protokollierung</li>
+      </ul>
+      <p>Dadurch bleiben bestehende Systeme weiterhin die <strong>führenden Systeme</strong>.</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="section">
+      <h2><span class="num">04</span>TANSS Integration</h2>
+      <div class="sec-rule"></div>
+      <p>TANSS bleibt weiterhin das zentrale System für Tickets, Kunden, Geräte, technische Vorgänge und
+      Servicehistorien. Die App ergänzt TANSS durch einen schnelleren mobilen Zugriff — die vorhandene
+      TANSS Mobile App bleibt weiterhin nutzbar.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h4>Ticketverwaltung</h4>
+          <ul class="clean">
+            <li>Eigene &amp; zugewiesene Tickets anzeigen</li>
+            <li>Ticketstatus &amp; Details öffnen</li>
+            <li>Kommentare hinzufügen</li>
+            <li>Neue Tickets erstellen</li>
+            <li>Ticketinformationen aktualisieren</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Geräte- &amp; Assetverwaltung</h4>
+          <ul class="clean">
+            <li>Geräte suchen &amp; Infos anzeigen</li>
+            <li>Seriennummer abrufen</li>
+            <li>Kunde &amp; letzte Tickets sehen</li>
+            <li>Wartungshistorie anzeigen</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="box q">
+        <div class="label">Ablauf · Ticket erstellen</div>
+        <div class="flow">Mitarbeiter erstellt Ticket in der App <span class="arrow">→</span>
+          Übertragung über TANSS API <span class="arrow">→</span> Ticket wird in TANSS erstellt</div>
+      </div>
+
+      <div class="box">
+        <div class="label">Highlight · QR-Code-Funktion</div>
+        <div class="flow">QR-Code am Gerät scannen <span class="arrow">→</span> Gerät wird in TANSS gesucht
+          <span class="arrow">→</span> Techniker erhält: Gerätedaten · Kunde · Tickets · Dokumentationen · Historie</div>
+        <p style="margin:8px 0 0; font-size:9.6pt;">Dadurch können Techniker beim Kunden deutlich schneller arbeiten.</p>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="section">
+      <h2><span class="num">05</span>TimeCard Integration</h2>
+      <div class="sec-rule"></div>
+      <p>TimeCard bleibt das führende System für Arbeitszeiten und wird <strong>nicht ersetzt</strong>.
+      Mitarbeiter nutzen weiterhin die normale TimeCard-Anwendung — zusätzlich werden wichtige
+      Informationen direkt in der Workspace App angezeigt:</p>
+      <div class="cards">
+        <div class="card"><ul class="clean">
+          <li>Aktueller Arbeitszeitstatus</li>
+          <li>Eingestempelt seit</li>
+          <li>Pausenstatus</li>
+        </ul></div>
+        <div class="card"><ul class="clean">
+          <li>Arbeitszeitübersicht &amp; Überstunden</li>
+          <li>Urlaubstage</li>
+          <li>Projektzeiten</li>
+        </ul></div>
+      </div>
+      <p>Der Mitarbeiter hat technische Aufgaben und Arbeitszeitinformationen an einem Ort verfügbar.</p>
+    </div>
+
+    <!-- 6 -->
+    <div class="section">
+      <h2><span class="num">06</span>Microsoft 365 Integration</h2>
+      <div class="sec-rule"></div>
+      <div class="cards">
+        <div class="card">
+          <h4>Outlook</h4>
+          <ul class="clean">
+            <li>Kalender &amp; nächste Termine</li>
+            <li>Kundentermine anzeigen</li>
+            <li>Erinnerungen erhalten</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Microsoft Teams</h4>
+          <ul class="clean">
+            <li>Kollegen suchen</li>
+            <li>Teams-Status anzeigen</li>
+            <li>Chat öffnen &amp; Meetings beitreten</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="section">
+      <h2><span class="num">07</span>Zentrale Wissensdatenbank</h2>
+      <div class="sec-rule"></div>
+      <p>Ein großer Mehrwert der App wäre eine interne, durchsuchbare Wissensdatenbank. Viele wichtige
+      Informationen sind heute verteilt in PDF-Dateien, Word- und Excel-Dokumenten, Netzwerkplänen,
+      Kundendokumentationen, Anleitungen, alten Tickets und Wartungsberichten.</p>
+      <p>Die Workspace App könnte diese Informationen zentral durchsuchbar machen. Mitarbeiter müssten
+      nicht mehr mehrere Ordner und Systeme durchsuchen, sondern könnten Informationen gezielt finden.</p>
+    </div>
+
+    <!-- 8 -->
+    <div class="section">
+      <h2><span class="num">08</span>KI-Assistent</h2>
+      <div class="sec-rule"></div>
+      <p>Ein zentraler Bestandteil der App könnte ein interner KI-Assistent sein, der Mitarbeiter bei
+      technischen Fragen und bei der Suche nach Informationen unterstützt. Die KI greift dabei
+      <strong>ausschließlich auf freigegebene interne Datenquellen</strong> zu: Dokumentationen, interne
+      Anleitungen, alte Tickets, Lösungsbeschreibungen, Kundeninformationen und technische Unterlagen.</p>
+
+      <div class="box q">
+        <div class="label">Beispiel · Technische Unterstützung</div>
+        <p style="margin:0"><strong>Frage:</strong> „Wie richte ich einen Sophos VPN Zugang ein?"</p>
+        <p style="margin:6px 0 0"><strong>Antwort:</strong> passende Anleitung · notwendige Schritte ·
+        interne Hinweise · relevante Dokumente</p>
+      </div>
+      <div class="box q">
+        <div class="label">Beispiel · Kundensupport</div>
+        <p style="margin:0"><strong>Frage:</strong> „Welche Firewall hat Kunde Müller?"</p>
+        <p style="margin:6px 0 0"><strong>Antwort:</strong> Firewall-Modell · Standort · letzte Wartung ·
+        vorhandene Dokumentationen · frühere Tickets</p>
+      </div>
+      <div class="box q">
+        <div class="label">Beispiel · Fehleranalyse</div>
+        <p style="margin:0"><strong>Frage:</strong> „Gab es diesen Fehler bei Kunde Schmidt schon einmal?"</p>
+        <p style="margin:6px 0 0"><strong>Antwort:</strong> Die KI durchsucht alte TANSS-Tickets,
+        Dokumentationen und vergangene Lösungen und schlägt mögliche Lösungswege vor.</p>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="section">
+      <h2><span class="num">09</span>Vorteile der KI-Wissensdatenbank</h2>
+      <div class="sec-rule"></div>
+      <div class="benefits">
+        <div class="benefit">Mitarbeiter finden schneller Lösungen</div>
+        <div class="benefit">Wissen bleibt im Unternehmen erhalten</div>
+        <div class="benefit">Neue Mitarbeiter werden schneller eingearbeitet</div>
+        <div class="benefit">Erfahrene Mitarbeiter werden entlastet</div>
+        <div class="benefit">Weniger Zeit für die Suche nach Informationen</div>
+        <div class="benefit">Erfahrungen aus Tickets werden wiederverwendbar</div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="section">
+      <h2><span class="num">10</span>Weitere mögliche Erweiterungen</h2>
+      <div class="sec-rule"></div>
+      <div class="cards">
+        <div class="card">
+          <h4>Monitoring</h4>
+          <ul class="clean"><li>Serverstatus</li><li>Backup-Status</li><li>Warnmeldungen &amp; Störungen</li></ul>
+        </div>
+        <div class="card">
+          <h4>Lagerverwaltung</h4>
+          <ul class="clean"><li>Hardwarebestand</li><li>Seriennummern</li><li>Materialreservierung &amp; Ausgabe</li></ul>
+        </div>
+        <div class="card">
+          <h4>Fahrzeugverwaltung</h4>
+          <ul class="clean"><li>Fahrzeugdaten</li><li>Kilometerstand</li><li>Wartungen</li></ul>
+        </div>
+        <div class="card">
+          <h4>Firmeninformationen</h4>
+          <ul class="clean"><li>Interne Nachrichten</li><li>Sicherheitsmeldungen</li><li>Neue Prozesse</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="section">
+      <h2><span class="num">11</span>Sicherheit</h2>
+      <div class="sec-rule"></div>
+      <p>Da die App auf interne Informationen zugreift, müssen folgende Sicherheitsanforderungen
+      berücksichtigt werden:</p>
+      <ul class="clean">
+        <li>Sichere Anmeldung</li>
+        <li>Rechteverwaltung</li>
+        <li>Verschlüsselte Kommunikation</li>
+        <li>Keine Speicherung sensibler Daten auf dem Gerät</li>
+        <li>Zugriff nur auf freigegebene Informationen</li>
+        <li>Protokollierung wichtiger Aktionen</li>
+      </ul>
+    </div>
+
+    <!-- 12 -->
+    <div class="section">
+      <h2><span class="num">12</span>Vorgehensweise</h2>
+      <div class="sec-rule"></div>
+      <div class="phase">
+        <div class="n">1</div>
+        <div class="b"><h4>Technischer Prototyp</h4>
+          <ul class="clean"><li>App-Grundgerüst &amp; Benutzeranmeldung</li><li>TANSS API prüfen</li>
+          <li>Ticketübersicht &amp; Ticket erstellen</li><li>TimeCard Integration prüfen</li></ul></div>
+      </div>
+      <div class="phase">
+        <div class="n">2</div>
+        <div class="b"><h4>Erweiterung</h4>
+          <ul class="clean"><li>Gerätesuche &amp; QR-Code Scanner</li><li>Leistungserfassung</li>
+          <li>Outlook &amp; Teams Integration</li></ul></div>
+      </div>
+      <div class="phase">
+        <div class="n">3</div>
+        <div class="b"><h4>Intelligente Funktionen</h4>
+          <ul class="clean"><li>KI-Assistent &amp; Wissensdatenbank</li><li>Dokumentationssuche</li>
+          <li>Monitoring &amp; weitere Systeme</li></ul></div>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="section">
+      <h2><span class="num">13</span>Nutzen für LEVITECH</h2>
+      <div class="sec-rule"></div>
+      <p>Die LEVITECH Workspace App schafft eine zentrale digitale Arbeitsumgebung. Die Vorteile:</p>
+      <div class="benefits">
+        <div class="benefit">Alle wichtigen Informationen auf dem Smartphone</div>
+        <div class="benefit">Weniger Wechsel zwischen Anwendungen</div>
+        <div class="benefit">Schnellere Bearbeitung von Aufgaben</div>
+        <div class="benefit">Bessere Unterstützung für Techniker unterwegs</div>
+        <div class="benefit">Leichterer Zugriff auf Wissen &amp; Dokumentationen</div>
+        <div class="benefit">Nutzung vorhandener Systeme, ohne sie zu ersetzen</div>
+      </div>
+    </div>
+
+    <!-- Fazit -->
+    <div class="fazit">
+      <h2><span class="num">—</span>Fazit</h2>
+      <div class="sec-rule"></div>
+      <p>Die LEVITECH Workspace App soll keine bestehenden Lösungen ablösen. TANSS, TimeCard und andere
+      Systeme bleiben weiterhin bestehen und können wie gewohnt genutzt werden. Die App verbindet diese
+      Systeme lediglich miteinander und schafft eine zentrale Oberfläche für Mitarbeiter.</p>
+      <p style="margin-bottom:0">Durch die Kombination aus <strong style="color:#fff">TANSS-Integration</strong>,
+      <strong style="color:#fff">TimeCard-Anbindung</strong>, <strong style="color:#fff">Wissensdatenbank</strong>
+      und <strong style="color:#fff">KI-Assistent</strong> entsteht eine moderne All-in-One-Arbeitsplattform,
+      die Mitarbeiter im täglichen Arbeitsablauf unterstützt und langfristig einen echten Mehrwert für
+      LEVITECH bieten kann.</p>
+    </div>
+
+    <div class="footer-note">LEVITECH Workspace App · Technisches Konzept · Interne Verwendung</div>
+
+  </div>
+</body>
+</html>
